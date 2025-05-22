@@ -1,13 +1,42 @@
 import React, { useState } from "react";
 import Navbar from "../shared-component/Navbar";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import axios from "axios";
+import { USER_API } from "../../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const [role, setRole] = useState("student");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const [input, setInput] = useState({
+    email: "",
+    password: "",
+    role: "",
+  });
+
+  const handleinput = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
+
+    try {
+      const res = await axios.post(`${USER_API}/login`, input, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (e) {
+      console.log("Some error occured in handlesubmit in signup ", e);
+      toast.error(e?.response?.data?.message || "somthing is missing");
+    }
   };
 
   return (
@@ -31,6 +60,9 @@ function Login() {
               </label>
               <input
                 type="email"
+                name="email"
+                value={input.email}
+                onChange={handleinput}
                 placeholder="you@example.com"
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
@@ -45,6 +77,9 @@ function Login() {
               <input
                 type="password"
                 placeholder="••••••••"
+                name="password"
+                value={input.password}
+                onChange={handleinput}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
@@ -61,8 +96,8 @@ function Login() {
                     type="radio"
                     name="role"
                     value="student"
-                    checked={role === "student"}
-                    onChange={() => setRole("student")}
+                    checked={input.role === "student"}
+                    onChange={handleinput}
                     className="accent-blue-600"
                   />
                   Student
@@ -72,8 +107,8 @@ function Login() {
                     type="radio"
                     name="role"
                     value="recruiter"
-                    checked={role === "recruiter"}
-                    onChange={() => setRole("recruiter")}
+                    checked={input.role === "recruiter"}
+                    onChange={handleinput}
                     className="accent-blue-600"
                   />
                   Recruiter

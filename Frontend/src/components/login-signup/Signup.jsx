@@ -1,13 +1,56 @@
 import React, { useState } from "react";
 import Navbar from "../shared-component/Navbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { USER_API } from "../../../utils/api";
+import { toast } from "sonner";
 
 function Signup() {
-  const [role, setRole] = useState("student");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const [input, setInput] = useState({
+    fullname: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    role: "",
+    file: "",
+  });
+
+  const handleinput = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
+  };
+
+  const changeFilehandler = (e) => {
+    setInput({ ...input, file: e.target.files?.[0] });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
+    const formData = new FormData();
+    formData.append("fullname", input.fullname);
+    formData.append("email", input.email);
+    formData.append("phoneNumber", input.phoneNumber);
+    formData.append("password", input.password);
+    formData.append("role", input.role);
+    if (input.file) {
+      formData.append("file", input.file);
+    }
+    try {
+      const res = await axios.post(`${USER_API}/register`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        navigate("/login");
+        toast.success(res.data.message);
+      }
+    } catch (e) {
+      console.log("Some error occured in handlesubmit in signup ", e);
+      toast.error(e.response.data.message);
+    }
   };
 
   return (
@@ -32,6 +75,9 @@ function Signup() {
               <input
                 type="text"
                 placeholder="John Doe"
+                value={input.fullname}
+                name="fullname"
+                onChange={handleinput}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
@@ -45,6 +91,9 @@ function Signup() {
               <input
                 type="email"
                 placeholder="you@example.com"
+                value={input.email}
+                name="email"
+                onChange={handleinput}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
@@ -58,6 +107,9 @@ function Signup() {
               <input
                 type="tel"
                 placeholder="98XXXXXXXX"
+                value={input.phoneNumber}
+                name="phoneNumber"
+                onChange={handleinput}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
@@ -71,6 +123,9 @@ function Signup() {
               <input
                 type="password"
                 placeholder="••••••••"
+                value={input.password}
+                name="password"
+                onChange={handleinput}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
@@ -87,8 +142,8 @@ function Signup() {
                     type="radio"
                     name="role"
                     value="student"
-                    checked={role === "student"}
-                    onChange={() => setRole("student")}
+                    checked={input.role === "student"}
+                    onChange={handleinput}
                     className="accent-blue-600"
                   />
                   Student
@@ -98,8 +153,8 @@ function Signup() {
                     type="radio"
                     name="role"
                     value="recruiter"
-                    checked={role === "recruiter"}
-                    onChange={() => setRole("recruiter")}
+                    checked={input.role === "recruiter"}
+                    onChange={handleinput}
                     className="accent-blue-600"
                   />
                   Recruiter
@@ -112,6 +167,7 @@ function Signup() {
                 <input
                   type="file"
                   accept="image/*"
+                  onChange={changeFilehandler}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer file:cursor-pointer"
                 />
               </div>

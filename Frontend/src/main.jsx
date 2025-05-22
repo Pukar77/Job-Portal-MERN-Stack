@@ -6,12 +6,14 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./components/login-signup/Login.jsx";
 import Signup from "./components/login-signup/Signup.jsx";
 import Home from "./components/Home.jsx";
+import { Toaster } from "sonner";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
   },
+ 
 
   {
     path: "/signup",
@@ -27,6 +29,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <RouterProvider router={router} />
+    <Toaster/>
     <App />
   </StrictMode>
 );
