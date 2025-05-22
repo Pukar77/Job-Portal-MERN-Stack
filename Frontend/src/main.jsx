@@ -13,7 +13,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <Home />,
   },
- 
 
   {
     path: "/signup",
@@ -29,7 +28,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <RouterProvider router={router} />
-    <Toaster/>
+    <Toaster />
     <App />
   </StrictMode>
 );
