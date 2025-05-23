@@ -4,10 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { USER_API } from "../../../utils/api";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../../redux/auth-slice";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 function Signup() {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const { loading } = useSelector((store) => store.auth);
   const [input, setInput] = useState({
     fullname: "",
     email: "",
@@ -37,6 +41,7 @@ function Signup() {
       formData.append("file", input.file);
     }
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(`${USER_API}/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -50,6 +55,8 @@ function Signup() {
     } catch (e) {
       console.log("Some error occured in handlesubmit in signup ", e);
       toast.error(e.response.data.message);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -174,12 +181,23 @@ function Signup() {
             </div>
 
             {/* Submit */}
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white font-medium py-2 rounded-md hover:bg-blue-700 transition duration-200 cursor-pointer"
-            >
-              Sign Up
-            </button>
+            {loading ? (
+              <button
+                type="button"
+                disabled
+                className="w-full flex items-center justify-center gap-2 bg-blue-400 text-white font-medium py-2 rounded-md cursor-not-allowed"
+              >
+                <AiOutlineLoading3Quarters className="animate-spin text-white text-xl" />
+                Please wait...
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white font-medium py-2 rounded-md hover:bg-blue-700 transition duration-200 cursor-pointer"
+              >
+                Login
+              </button>
+            )}
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-600">
