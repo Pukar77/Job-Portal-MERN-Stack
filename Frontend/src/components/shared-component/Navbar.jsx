@@ -29,7 +29,7 @@ function Navbar() {
               <Link to="/"> Home</Link>
             </li>
             <li className="hover:text-blue-600 cursor-pointer transition-colors">
-              Job
+              <Link to="/jobs">Jobs</Link>
             </li>
             <li className="hover:text-blue-600 cursor-pointer transition-colors">
               Browse

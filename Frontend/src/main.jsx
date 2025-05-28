@@ -9,6 +9,7 @@ import Home from "./components/Home.jsx";
 import { Toaster } from "sonner";
 import { Provider } from "react-redux";
 import store from "./redux/store.js";
+import Jobs from "./components/Jobs.jsx";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+  {
+    path: "/jobs",
+    element: <Jobs/>
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(
