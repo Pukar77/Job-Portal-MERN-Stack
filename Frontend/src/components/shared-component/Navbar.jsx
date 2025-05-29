@@ -10,9 +10,10 @@ import {
 } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useSelector } from "react-redux";
 
 function Navbar() {
-  const user = false;
+  const { user } = useSelector((store) => store.auth);
 
   return (
     <header className="bg-white shadow-md px-6 py-4">
@@ -32,7 +33,7 @@ function Navbar() {
               <Link to="/jobs">Jobs</Link>
             </li>
             <li className="hover:text-blue-600 cursor-pointer transition-colors">
-              Browse
+              <Link to="/browse">Browse</Link>
             </li>
           </ul>
 
@@ -70,7 +71,7 @@ function Navbar() {
                       variant="link"
                     >
                       <FaUserTie />
-                      Profile
+                      <Link to="/profile">Profile</Link>
                     </Button>
 
                     <Button

@@ -10,6 +10,8 @@ import { Toaster } from "sonner";
 import { Provider } from "react-redux";
 import store from "./redux/store.js";
 import Jobs from "./components/Jobs.jsx";
+import Browse from "./components/Browse.jsx";
+import Profile from "./components/Profile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +30,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/jobs",
-    element: <Jobs/>
+    element: <Jobs />,
+  },
+  {
+    path: "/browse",
+    element: <Browse />,
+  },
+  {
+    path: "/profile",
+    element: <Profile/>
   }
 ]);
 
