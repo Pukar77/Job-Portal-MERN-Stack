@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./shared-component/Navbar";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -7,11 +7,14 @@ import { IoIosMail } from "react-icons/io";
 import { MdOutlineContactPhone } from "react-icons/md";
 import { Badge } from "./ui/badge";
 import AppliedJobTable from "./AppliedJobTable";
+import UpdateProfileDialog from "./UpdateProfileDialog";
 
 const skills = ["HTML", "CSS", "MONGODB"]; // You can fill this array with some skill strings to test
 const isResume = true;
 
 function Profile() {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
@@ -34,7 +37,11 @@ function Profile() {
             </p>
           </div>
           <div className="ml-auto">
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button
+              onClick={() => setOpen(true)}
+              variant="outline"
+              className="flex items-center gap-2 cursor-pointer"
+            >
               <FaEdit />
               Edit
             </Button>
@@ -94,6 +101,7 @@ function Profile() {
         {/* esma chai applied job ko lai table banaune, for that i have created a component name AppliedJobTable */}
         <AppliedJobTable />
       </div>
+      <UpdateProfileDialog open={open} setOpen={setOpen} />
     </div>
   );
 }

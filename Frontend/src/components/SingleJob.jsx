@@ -3,8 +3,12 @@ import { Button } from "./ui/button";
 import { FaRegBookmark } from "react-icons/fa";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+
+const jobId = "hello world";
 
 function SingleJob() {
+  const navigate = useNavigate();
   return (
     <div className="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition-shadow duration-300 space-y-4 border border-gray-200">
       {/* Header: Date and Bookmark */}
@@ -49,7 +53,13 @@ function SingleJob() {
 
       {/* Action Button */}
       <div className="flex gap-3 pt-2">
-        <Button className=" cursor-pointer" variant="outline">
+        <Button
+          onClick={() => {
+            navigate(`/description/${jobId}`);
+          }}
+          className=" cursor-pointer"
+          variant="outline"
+        >
           View Details
         </Button>
         <Button className=" cursor-pointer bg-blue-600">Save for Later</Button>

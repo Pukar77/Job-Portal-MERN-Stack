@@ -12,6 +12,7 @@ import store from "./redux/store.js";
 import Jobs from "./components/Jobs.jsx";
 import Browse from "./components/Browse.jsx";
 import Profile from "./components/Profile.jsx";
+import JobDescription from "./components/JobDescription.jsx";
 
 const router = createBrowserRouter([
   {
@@ -38,8 +39,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <Profile/>
-  }
+    element: <Profile />,
+  },
+  {
+    path: "/description/:id",
+    element: <JobDescription />,
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(
