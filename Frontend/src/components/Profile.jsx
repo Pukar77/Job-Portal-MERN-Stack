@@ -8,12 +8,15 @@ import { MdOutlineContactPhone } from "react-icons/md";
 import { Badge } from "./ui/badge";
 import AppliedJobTable from "./AppliedJobTable";
 import UpdateProfileDialog from "./UpdateProfileDialog";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../redux/auth-slice";
 
-const skills = ["HTML", "CSS", "MONGODB"]; // You can fill this array with some skill strings to test
+// const skills = ["HTML", "CSS", "MONGODB"]; // You can fill this array with some skill strings to test
 const isResume = true;
 
 function Profile() {
   const [open, setOpen] = useState(false);
+  const { user } = useSelector((store) => store.auth);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -30,11 +33,8 @@ function Profile() {
             />
           </Avatar>
           <div>
-            <h1 className="text-xl font-bold">Full Name</h1>
-            <p className="text-sm text-gray-600">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem quam
-              quae necessitatibus deserunt illum?
-            </p>
+            <h1 className="text-xl font-bold">{user?.fullname}</h1>
+            <p className="text-sm text-gray-600">{user?.profile?.bio}</p>
           </div>
           <div className="ml-auto">
             <Button
@@ -52,20 +52,20 @@ function Profile() {
         <div className="flex items-center gap-10 text-gray-700">
           <div className="flex items-center gap-2">
             <IoIosMail />
-            <span>rimal@gmail.com</span>
+            <span>{user?.email}</span>
           </div>
           <div className="flex items-center gap-2">
             <MdOutlineContactPhone />
-            <span>9866337295</span>
+            <span>{user?.phoneNumber}</span>
           </div>
         </div>
 
         {/* Skills */}
         <div>
-          <h2 className="text-lg font-semibold mb-2">Skills</h2>
-          {skills.length > 0 ? (
+          {Array.isArray(user?.profile?.skills) &&
+          user.profile.skills.length > 0 ? (
             <div className="flex flex-wrap gap-2">
-              {skills.map((item, index) => (
+              {user.profile.skills.map((item, index) => (
                 <Badge key={index}>{item}</Badge>
               ))}
             </div>
@@ -82,10 +82,10 @@ function Profile() {
           {isResume ? (
             <a
               target="_blank"
-              href="https://youtube.com"
+              href={user.profile.resume}
               className="text-blue-600 hover:underline font-semibold"
             >
-              📄 Click here to view resume
+              📄 {user.profile.resumeOriginalName}
             </a>
           ) : (
             <span className="text-sm text-red-500">
