@@ -27,7 +27,7 @@ function Profile() {
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
             <AvatarImage
-              src="https://github.com/shadcn.png"
+              src={user.profile.profilePhoto}
               alt="User"
               className="rounded-full"
             />

@@ -2,7 +2,7 @@ import React from "react";
 import { FaUserTie } from "react-icons/fa";
 import { IoSettings } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Popover,
   PopoverTrigger,
@@ -10,10 +10,31 @@ import {
 } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { USER_API } from "../../../utils/api";
+import { setUser } from "../../redux/auth-slice";
+import { toast } from "sonner";
 
 function Navbar() {
   const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogOut = async () => {
+    try {
+      const res = await axios.get(`${USER_API}/logout`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        dispatch(setUser(null));
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (e) {
+      console.log("Some error occured while log out", e);
+    }
+  };
 
   return (
     <header className="bg-white shadow-md px-6 py-4">
@@ -57,13 +78,13 @@ function Navbar() {
             <Popover>
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer ring-2 ring-blue-500 hover:ring-blue-600 transition-all duration-200">
-                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-                  <AvatarFallback>AR</AvatarFallback>
+                  <AvatarImage src={user.profile.profilePhoto} alt="User" />
+                  <AvatarFallback>PP</AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-48 mt-2 shadow-lg rounded-lg p-4 text-sm text-gray-800">
-                <div className="font-semibold">Alex Rimal</div>
-                <p className="text-xs text-gray-500 mb-3">alex@email.com</p>
+                <div className="font-semibold">{user.fullname}</div>
+                <p className="text-xs text-gray-500 mb-3">{user.email}</p>
                 <ul className="space-y-2">
                   <div className="flex flex-col items-start">
                     <Button
@@ -83,6 +104,7 @@ function Navbar() {
                     </Button>
 
                     <Button
+                      onClick={handleLogOut}
                       className="hover:text-blue-600 cursor-pointer"
                       variant="link"
                     >

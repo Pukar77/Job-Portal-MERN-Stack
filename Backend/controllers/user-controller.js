@@ -14,6 +14,10 @@ export const register = async (req, res) => {
       });
     }
 
+    const file = req.file;
+    const fileUri = getDataUri(file);
+    const cloudeResponse = await cloudinary.uploader.upload(fileUri.content);
+
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
@@ -29,6 +33,9 @@ export const register = async (req, res) => {
       phoneNumber,
       password: hashpassword,
       role,
+      profile: {
+        profilePhoto: cloudeResponse.secure_url,
+      },
     });
 
     return res.status(201).json({
@@ -130,8 +137,11 @@ export const updateProfile = async (req, res) => {
     const { fullname, email, phoneNumber, bio, skills } = req.body;
     const file = req.file;
     //cloudinary
-    const fileUri = getDataUri(file);
-    const cloudeResponse = await cloudinary.uploader.upload(fileUri.content);
+    let cloudeResponse;
+    if (file) {
+      const fileUri = getDataUri(file);
+      cloudeResponse = await cloudinary.uploader.upload(fileUri.content);
+    }
 
     let skillsArray;
     if (skills) {
