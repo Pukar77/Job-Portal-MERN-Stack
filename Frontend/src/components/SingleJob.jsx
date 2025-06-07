@@ -5,15 +5,26 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 
-const jobId = "hello world";
-
-function SingleJob() {
+function SingleJob({ job }) {
   const navigate = useNavigate();
+
+  const DaysAgoFunction = (mongodbtime) => {
+    const createdAt = new Date(mongodbtime);
+    const currentTime = new Date();
+    const timeDifference = currentTime - createdAt;
+    return Math.floor(timeDifference / (1000 * 24 * 60 * 60));
+  };
   return (
     <div className="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition-shadow duration-300 space-y-4 border border-gray-200">
       {/* Header: Date and Bookmark */}
       <div className="flex items-center justify-between text-sm text-gray-500">
-        <p>2 days ago</p>
+        <p>
+          {" "}
+          {DaysAgoFunction(job?.createdAt) === 0
+            ? "Today"
+            : `${DaysAgoFunction(job?.createdAt)}`}{" "}
+          days ago{" "}
+        </p>
         <Button
           variant="outline"
           className="rounded-full size-8 flex items-center justify-center p-1"
@@ -28,26 +39,22 @@ function SingleJob() {
           <AvatarImage src="https://99designs-blog.imgix.net/blog/wp-content/uploads/2022/06/Starbucks_Corporation_Logo_2011.svg-e1657703028844.png?auto=format&q=60&fit=max&w=930" />
         </Avatar>
         <div>
-          <h2 className="text-md font-semibold">Starbucks</h2>
-          <p className="text-sm text-gray-500">Nepal</p>
+          <h2 className="text-md font-semibold">{job?.company?.name}</h2>
+          <p className="text-sm text-gray-500">{job?.location}</p>
         </div>
       </div>
 
       {/* Job Title and Description */}
       <div>
-        <h1 className="font-bold text-lg mb-1">Frontend Developer</h1>
-        <p className="text-sm text-gray-600 line-clamp-3">
-          We are looking for a skilled Frontend Developer to join our dynamic
-          team. You'll work on creating intuitive interfaces using React and
-          Tailwind. Prior experience with component libraries is a plus.
-        </p>
+        <h1 className="font-bold text-lg mb-1">{job?.title}</h1>
+        <p className="text-sm text-gray-600 line-clamp-3">{job.description}</p>
       </div>
 
       <div>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">2 Positions</Badge>
-          <Badge variant="outline">Part Time</Badge>
-          <Badge variant="outline">20 LPA</Badge>
+          <Badge variant="outline">{job?.position} Positions</Badge>
+          <Badge variant="outline">{job?.jobType}</Badge>
+          <Badge variant="outline">{job?.Salary}</Badge>
         </div>
       </div>
 
@@ -55,7 +62,7 @@ function SingleJob() {
       <div className="flex gap-3 pt-2">
         <Button
           onClick={() => {
-            navigate(`/description/${jobId}`);
+            navigate(`/description/${job?._id}`);
           }}
           className=" cursor-pointer"
           variant="outline"
