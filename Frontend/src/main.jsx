@@ -13,6 +13,10 @@ import Jobs from "./components/Jobs.jsx";
 import Browse from "./components/Browse.jsx";
 import Profile from "./components/Profile.jsx";
 import JobDescription from "./components/JobDescription.jsx";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+
+const persister = persistStore(store);
 
 const router = createBrowserRouter([
   {
@@ -50,8 +54,10 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
+      <PersistGate loading={null} persistor={persister}>
+        <App />
+      </PersistGate>
       <RouterProvider router={router} />
-      <App />
     </Provider>
     <Toaster />
   </StrictMode>
