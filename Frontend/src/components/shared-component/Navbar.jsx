@@ -32,32 +32,45 @@ function Navbar() {
         toast.success(res.data.message);
       }
     } catch (e) {
-      console.log("Some error occured while log out", e);
+      console.log("Some error occurred while logging out", e);
     }
   };
 
   return (
     <header className="bg-white shadow-md px-6 py-4">
-      <nav className="flex justify-between items-center  ">
-        {/* Logo Section */}
+      <nav className="flex justify-between items-center">
+        {/* Left: Logo */}
         <div className="text-2xl font-bold text-gray-800">
           Apply <span className="text-blue-600">Rush</span>
         </div>
 
-        {/* Nav Links + Avatar */}
+        {/* Right: Nav Links + Avatar/Auth */}
         <div className="flex items-center gap-8">
-          <ul className="flex gap-6 text-gray-700 font-medium">
-            <li className="hover:text-blue-600 cursor-pointer transition-colors">
-              <Link to="/"> Home</Link>
-            </li>
-            <li className="hover:text-blue-600 cursor-pointer transition-colors">
-              <Link to="/jobs">Jobs</Link>
-            </li>
-            <li className="hover:text-blue-600 cursor-pointer transition-colors">
-              <Link to="/browse">Browse</Link>
-            </li>
-          </ul>
+          {/* Nav Links */}
+          {user && user.role === "recruiter" ? (
+            <ul className="flex gap-6 text-gray-700 font-medium">
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">
+                <Link to="/admin/companies">Companies</Link>
+              </li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">
+                <Link to="/admin/jobs">Jobs</Link>
+              </li>
+            </ul>
+          ) : (
+            <ul className="flex gap-6 text-gray-700 font-medium">
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">
+                <Link to="/">Home</Link>
+              </li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">
+                <Link to="/jobs">Jobs</Link>
+              </li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">
+                <Link to="/browse">Browse</Link>
+              </li>
+            </ul>
+          )}
 
+          {/* Avatar or Login/Signup */}
           {!user ? (
             <div className="flex gap-4">
               <Button
@@ -87,37 +100,39 @@ function Navbar() {
                 <p className="text-xs text-gray-500 mb-3">{user.email}</p>
                 <ul className="space-y-2">
                   <div className="flex flex-col items-start">
-                    <Button
-                      className="hover:text-blue-600 cursor-pointer"
-                      variant="link"
-                    >
-                      <FaUserTie />
-                      <Link to="/profile">Profile</Link>
-                    </Button>
+                    {user && user.role === "student" && (
+                      <Button
+                        className="hover:text-blue-600 cursor-pointer"
+                        variant="link"
+                      >
+                        <FaUserTie />
+
+                        <Link to="/profile" className="ml-2">
+                          Profile
+                        </Link>
+                      </Button>
+                    )}
 
                     <Button
                       className="hover:text-blue-600 cursor-pointer"
                       variant="link"
                     >
                       <IoSettings />
-                      Setting
+                      <span className="ml-2">Setting</span>
                     </Button>
-
                     <Button
                       onClick={handleLogOut}
                       className="hover:text-blue-600 cursor-pointer"
                       variant="link"
                     >
                       <MdOutlineLogout />
-                      Logout
+                      <span className="ml-2">Logout</span>
                     </Button>
                   </div>
                 </ul>
               </PopoverContent>
             </Popover>
           )}
-
-          {/* Avatar Popover */}
         </div>
       </nav>
     </header>
