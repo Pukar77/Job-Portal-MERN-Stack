@@ -1,11 +1,19 @@
 import { Company } from "../models/company-model.js";
+import cloudinary from "../utils/cloudinary.js";
+import getDataUri from "../utils/datauri.js";
+
 export const registerCompany = async (req, res) => {
   try {
-    const { companyName } = req.body;
+    const { companyName, description, website, location } = req.body;
+    const file = req.file;
+    //cludinary
+    const fileUri = getDataUri(file);
+    const cloudeResponse = await cloudinary.uploader.upload(fileUri.content);
+    const logo = cloudeResponse.secure_url;
 
-    if (!companyName) {
+    if (!companyName || !description || !website || !location) {
       return res.status(400).json({
-        message: "Company name must be specified",
+        message: "All field must be filled",
         success: false,
       });
     }
@@ -21,6 +29,10 @@ export const registerCompany = async (req, res) => {
 
     company = await Company.create({
       name: companyName,
+      description: description,
+      website: website,
+      location: location,
+      logo: logo,
       userId: req.id,
     });
 
@@ -79,8 +91,11 @@ export const updateCompany = async (req, res) => {
     const { name, description, website, location } = req.body;
     const file = req.file;
     //clodinary
+    const fileUri = getDataUri(file);
+    const cloudeResponse = await cloudinary.uploader.upload(fileUri.content);
+    const logo = cloudeResponse.secure_url;
 
-    const updateData = { name, description, website, location };
+    const updateData = { name, description, website, location, logo };
 
     const company = await Company.findByIdAndUpdate(req.params.id, updateData, {
       new: true,

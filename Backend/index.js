@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import connectDB from "./dbconnection/db.js";
 import userRoute from "./routes/user-route.js";
 import companyRoute from "./routes/company-route.js";
-import jobRoute from "./routes/job-route.js"
+import jobRoute from "./routes/job-route.js";
 import applicationRoute from "./routes/application-route.js";
 dotenv.config();
 
@@ -17,7 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 const corsOption = {
   origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 app.use(cors(corsOption));
 
