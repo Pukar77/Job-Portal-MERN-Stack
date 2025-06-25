@@ -17,56 +17,52 @@ import { useSelector } from "react-redux";
 import useGetAllCompanies from "../../hooks/useGetAllCompanies";
 import { useNavigate } from "react-router-dom";
 
-function CompaniesTable() {
+function AdminJobsTable() {
   const navigate = useNavigate();
-  const { companies, searchCompanyByText } = useSelector(
-    (store) => store.company
-  );
-  const [filterCompany, setFilterCompany] = useState(companies);
+  useGetAllCompanies(); 
+  const { allAdminJobs, searchJobByText } = useSelector((store) => store.job);
+  const [filterJobs, setFilterJobs] = useState([]);
 
   useEffect(() => {
-    const filteredCompany =
-      companies.length >= 0 &&
-      companies.filter((company) => {
-        if (!searchCompanyByText) {
-          return true;
-        }
-        return company?.name
-          ?.toLowerCase()
-          .includes(searchCompanyByText.toLowerCase());
-      });
-    setFilterCompany(filteredCompany);
-  }, [companies, searchCompanyByText]);
+    const filteredJobs =
+      allAdminJobs?.filter((job) => {
+        if (!searchJobByText) return true;
+        return (
+          job?.title?.toLowerCase().includes(searchJobByText.toLowerCase()) ||
+          job?.company?.name
+            .toLowerCase()
+            .includes(searchJobByText.toLowerCase())
+        );
+      }) || [];
+
+    setFilterJobs(filteredJobs);
+  }, [allAdminJobs, searchJobByText]);
 
   return (
     <div>
       <Table>
-        <TableCaption>A list of your registered companies</TableCaption>
+        <TableCaption>A list of your recent posted jobs</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Logo</TableHead>
-            <TableHead>Name</TableHead>
+            <TableHead>Company Name</TableHead>
+            <TableHead>Role</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {!companies || companies.length === 0 ? (
+          {!filterJobs || filterJobs.length === 0 ? (
             <TableRow>
               <TableCell colSpan={4}>
-                You haven't registered any company yet.
+                You haven't posted any jobs yet.
               </TableCell>
             </TableRow>
           ) : (
-            filterCompany.map((company) => (
-              <TableRow key={company._id}>
-                <TableCell>
-                  <Avatar>
-                    <AvatarImage className="h-18 w-20" src={company.logo} />
-                  </Avatar>
-                </TableCell>
-                <TableCell>{company.name}</TableCell>
-                <TableCell>{company.createdAt?.split("T")[0]}</TableCell>
+            filterJobs.map((job) => (
+              <TableRow key={job._id}>
+                <TableCell>{job?.company?.name || "Untitled Job"}</TableCell>
+                <TableCell>{job?.title || "Not specified"}</TableCell>
+                <TableCell>{job.createdAt?.split("T")[0]}</TableCell>
                 <TableCell>
                   <Popover>
                     <PopoverTrigger className="text-5xl cursor-pointer mb-7">
@@ -75,7 +71,7 @@ function CompaniesTable() {
                     <PopoverContent className="bg-white rounded-xl shadow-lg p-4 w-36 border border-gray-200">
                       <div
                         onClick={() => {
-                          navigate(`/admin/companies/${company._id}`);
+                          navigate(`/admin/companies/${job._id}`);
                         }}
                         className="flex items-center gap-3 text-gray-700 hover:text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-150"
                       >
@@ -94,4 +90,4 @@ function CompaniesTable() {
   );
 }
 
-export default CompaniesTable;
+export default AdminJobsTable;

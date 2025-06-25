@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 function CompanySetup() {
-  const params = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [input, setInput] = useState({
@@ -44,7 +44,7 @@ function CompanySetup() {
     try {
       setLoading(true);
 
-      const res = await axios.put(`${COMPANY_API}/update/${params}`, formData, {
+      const res = await axios.put(`${COMPANY_API}/update/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
