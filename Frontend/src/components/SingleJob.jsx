@@ -36,7 +36,7 @@ function SingleJob({ job }) {
       {/* Company Info */}
       <div className="flex items-center gap-4">
         <Avatar className="size-12">
-          <AvatarImage src="https://99designs-blog.imgix.net/blog/wp-content/uploads/2022/06/Starbucks_Corporation_Logo_2011.svg-e1657703028844.png?auto=format&q=60&fit=max&w=930" />
+          <AvatarImage src={job?.company?.logo} />
         </Avatar>
         <div>
           <h2 className="text-md font-semibold">{job?.company?.name}</h2>
