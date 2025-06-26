@@ -20,6 +20,7 @@ import CompanyCreate from "./components/Admin/CompanyCreate.jsx";
 import CompanySetup from "./components/Admin/CompanySetup.jsx";
 import AdminJobs from "./components/Admin/AdminJobs.jsx";
 import PostJob from "./components/Admin/PostJob.jsx";
+import Applicants from "./components/Admin/Applicants.jsx";
 
 const persister = persistStore(store);
 
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
     path: "/admin/jobs/create",
     element: <PostJob />,
   },
+  {
+    path:"admin/jobs/:id/applicants",
+    element:<Applicants/>
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(

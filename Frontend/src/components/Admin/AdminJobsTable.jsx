@@ -1,5 +1,7 @@
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { Popover } from "../ui/popover";
+import { ImUsers } from "react-icons/im";
+
 import {
   Table,
   TableBody,
@@ -19,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 function AdminJobsTable() {
   const navigate = useNavigate();
-  useGetAllCompanies(); 
+  useGetAllCompanies();
   const { allAdminJobs, searchJobByText } = useSelector((store) => store.job);
   const [filterJobs, setFilterJobs] = useState([]);
 
@@ -77,6 +79,16 @@ function AdminJobsTable() {
                       >
                         <FaEdit className="text-md" />
                         <span className="text-sm font-medium">Edit</span>
+                      </div>
+
+                      <div
+                        onClick={() => {
+                          navigate(`/admin/jobs/${job._id}/applicants`);
+                        }}
+                        className="flex items-center gap-3 text-gray-700 hover:text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-150"
+                      >
+                        <ImUsers size={42} className="text-3xl"  />
+                        <span className="text-sm font-medium">Applicants</span>
                       </div>
                     </PopoverContent>
                   </Popover>
