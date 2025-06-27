@@ -47,7 +47,7 @@ function SingleJob({ job }) {
       {/* Job Title and Description */}
       <div>
         <h1 className="font-bold text-lg mb-1">{job?.title}</h1>
-        <p className="text-sm text-gray-600 line-clamp-3">{job.description}</p>
+        <p className="text-sm text-gray-600 line-clamp-3">{job?.description}</p>
       </div>
 
       <div>

@@ -3,6 +3,7 @@ import JobCards from "./JobCards";
 import { useSelector } from "react-redux";
 
 function LatestJobs() {
+
   const { alljobs } = useSelector((store) => store.job);
   return (
     <div>
@@ -16,7 +17,13 @@ function LatestJobs() {
             <span>No jobs have been posted yet</span>
           ) : (
             alljobs.map((job) => {
-              return <JobCards key={job._id} job={job} />;
+              return (
+                <JobCards
+                
+                  key={job._id}
+                  job={job}
+                />
+              );
             })
           )}
         </div>

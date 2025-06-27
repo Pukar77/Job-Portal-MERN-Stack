@@ -10,11 +10,13 @@ import AppliedJobTable from "./AppliedJobTable";
 import UpdateProfileDialog from "./UpdateProfileDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../redux/auth-slice";
+import useGetAppliedJob from "../hooks/useGetAppliedJob";
 
 // const skills = ["HTML", "CSS", "MONGODB"]; // You can fill this array with some skill strings to test
 const isResume = true;
 
 function Profile() {
+  useGetAppliedJob();
   const [open, setOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
 
