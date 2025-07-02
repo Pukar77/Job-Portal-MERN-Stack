@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 
 function SingleJob({ job }) {
+  const backendBaseUrl = "http://localhost:8000";
   const navigate = useNavigate();
 
   const DaysAgoFunction = (mongodbtime) => {
@@ -36,7 +37,7 @@ function SingleJob({ job }) {
       {/* Company Info */}
       <div className="flex items-center gap-4">
         <Avatar className="size-12">
-          <AvatarImage src={job?.company?.logo} />
+          <AvatarImage src={`${backendBaseUrl}${job?.company?.logo}`} />
         </Avatar>
         <div>
           <h2 className="text-md font-semibold">{job?.company?.name}</h2>

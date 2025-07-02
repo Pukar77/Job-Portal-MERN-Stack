@@ -1,5 +1,10 @@
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
-import { Popover } from "../ui/popover";
+import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
+import { FaEdit } from "react-icons/fa";
+
 import {
   Table,
   TableBody,
@@ -9,13 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-
-import React, { useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
-import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
-import { useSelector } from "react-redux";
-import useGetAllCompanies from "../../hooks/useGetAllCompanies";
-import { useNavigate } from "react-router-dom";
+import { Popover } from "../ui/popover";
 
 function CompaniesTable() {
   const navigate = useNavigate();
@@ -23,6 +22,7 @@ function CompaniesTable() {
     (store) => store.company
   );
   const [filterCompany, setFilterCompany] = useState(companies);
+  const backendBaseUrl = "http://localhost:8000";
 
   useEffect(() => {
     const filteredCompany =
@@ -58,35 +58,47 @@ function CompaniesTable() {
               </TableCell>
             </TableRow>
           ) : (
-            filterCompany.map((company) => (
-              <TableRow key={company._id}>
-                <TableCell>
-                  <Avatar>
-                    <AvatarImage className="h-18 w-20" src={company.logo} />
-                  </Avatar>
-                </TableCell>
-                <TableCell>{company.name}</TableCell>
-                <TableCell>{company.createdAt?.split("T")[0]}</TableCell>
-                <TableCell>
-                  <Popover>
-                    <PopoverTrigger className="text-5xl cursor-pointer mb-7">
-                      ...
-                    </PopoverTrigger>
-                    <PopoverContent className="bg-white rounded-xl shadow-lg p-4 w-36 border border-gray-200">
-                      <div
-                        onClick={() => {
-                          navigate(`/admin/companies/${company._id}`);
+            filterCompany.map((company) => {
+              const imageUrl = `${backendBaseUrl}${company.logo}`;
+
+              return (
+                <TableRow key={company._id}>
+                  <TableCell>
+                    <Avatar>
+                      <AvatarImage
+                        className="h-18 w-20"
+                        src={imageUrl}
+                        alt="logo"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "/default-logo.png"; // optional fallback
                         }}
-                        className="flex items-center gap-3 text-gray-700 hover:text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-150"
-                      >
-                        <FaEdit className="text-md" />
-                        <span className="text-sm font-medium">Edit</span>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </TableCell>
-              </TableRow>
-            ))
+                      />
+                    </Avatar>
+                  </TableCell>
+                  <TableCell>{company.name}</TableCell>
+                  <TableCell>{company.createdAt?.split("T")[0]}</TableCell>
+                  <TableCell>
+                    <Popover>
+                      <PopoverTrigger className="text-5xl cursor-pointer mb-7">
+                        ...
+                      </PopoverTrigger>
+                      <PopoverContent className="bg-white rounded-xl shadow-lg p-4 w-36 border border-gray-200">
+                        <div
+                          onClick={() =>
+                            navigate(`/admin/companies/${company._id}`)
+                          }
+                          className="flex items-center gap-3 text-gray-700 hover:text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-150"
+                        >
+                          <FaEdit className="text-md" />
+                          <span className="text-sm font-medium">Edit</span>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </TableCell>
+                </TableRow>
+              );
+            })
           )}
         </TableBody>
       </Table>

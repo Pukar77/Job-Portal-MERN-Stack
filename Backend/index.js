@@ -8,7 +8,7 @@ import companyRoute from "./routes/company-route.js";
 import jobRoute from "./routes/job-route.js";
 import applicationRoute from "./routes/application-route.js";
 dotenv.config();
-
+import path from "path";
 const app = express();
 
 //middleware
@@ -22,6 +22,8 @@ const corsOption = {
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 app.use(cors(corsOption));
+// Serve uploads folder statically
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 //database connection
 connectDB();

@@ -21,6 +21,7 @@ function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const backendBaseUrl = "http://localhost:8000";
   const handleLogOut = async () => {
     try {
       const res = await axios.get(`${USER_API}/logout`, {
@@ -67,6 +68,10 @@ function Navbar() {
               <li className="hover:text-blue-600 cursor-pointer transition-colors">
                 <Link to="/browse">Browse</Link>
               </li>
+
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">
+                <Link to="/recommend">Recommend job</Link>
+              </li>
             </ul>
           )}
 
@@ -91,7 +96,10 @@ function Navbar() {
             <Popover>
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer ring-2 ring-blue-500 hover:ring-blue-600 transition-all duration-200">
-                  <AvatarImage src={user.profile.profilePhoto} alt="User" />
+                  <AvatarImage
+                    src={`${backendBaseUrl}/${user.profile.profilePhoto}`}
+                    alt="User"
+                  />
                   <AvatarFallback>PP</AvatarFallback>
                 </Avatar>
               </PopoverTrigger>

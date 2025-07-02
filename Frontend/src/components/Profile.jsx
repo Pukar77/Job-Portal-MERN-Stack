@@ -12,13 +12,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../redux/auth-slice";
 import useGetAppliedJob from "../hooks/useGetAppliedJob";
 
-// const skills = ["HTML", "CSS", "MONGODB"]; // You can fill this array with some skill strings to test
-const isResume = true;
-
 function Profile() {
   useGetAppliedJob();
   const [open, setOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
+
+  const backendBaseUrl = "http://localhost:8000"; 
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -29,7 +28,7 @@ function Profile() {
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
             <AvatarImage
-              src={user.profile.profilePhoto}
+              src={`${backendBaseUrl}/${user.profile.profilePhoto}`}
               alt="User"
               className="rounded-full"
             />
@@ -77,14 +76,17 @@ function Profile() {
             </span>
           )}
         </div>
+
+        {/* Resume */}
         <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mt-4 space-y-2">
           <label className="block text-sm font-medium text-gray-700">
             Resume
           </label>
-          {isResume ? (
+          {user.profile.resume ? (
             <a
+              href={`${backendBaseUrl}/${user.profile.resume}`}
               target="_blank"
-              href={user.profile.resume}
+              rel="noopener noreferrer"
               className="text-blue-600 hover:underline font-semibold"
             >
               📄 {user.profile.resumeOriginalName}
@@ -96,13 +98,14 @@ function Profile() {
           )}
         </div>
       </div>
+
       <div>
         <h1 className="text-blue-600 text-center font-bold text-2xl mt-8">
           Applied Job
         </h1>
-        {/* esma chai applied job ko lai table banaune, for that i have created a component name AppliedJobTable */}
         <AppliedJobTable />
       </div>
+
       <UpdateProfileDialog open={open} setOpen={setOpen} />
     </div>
   );

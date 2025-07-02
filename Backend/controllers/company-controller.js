@@ -5,34 +5,37 @@ import getDataUri from "../utils/datauri.js";
 export const registerCompany = async (req, res) => {
   try {
     const { companyName, description, website, location } = req.body;
-    const file = req.file;
-    //cludinary
-    const fileUri = getDataUri(file);
-    const cloudeResponse = await cloudinary.uploader.upload(fileUri.content);
-    const logo = cloudeResponse.secure_url;
+
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ message: "Logo file is required", success: false });
+    }
 
     if (!companyName || !description || !website || !location) {
       return res.status(400).json({
-        message: "All field must be filled",
+        message: "All fields must be filled",
         success: false,
       });
     }
+
+    const logo = `/uploads/${req.file.filename}`; // This will be served from public/uploads/
 
     let company = await Company.findOne({ companyName });
 
     if (company) {
       return res.status(400).json({
-        message: "Company already registered with similar name",
+        message: "Company already registered with a similar name",
         success: false,
       });
     }
 
     company = await Company.create({
       name: companyName,
-      description: description,
-      website: website,
-      location: location,
-      logo: logo,
+      description,
+      website,
+      location,
+      logo,
       userId: req.id,
     });
 
@@ -42,7 +45,10 @@ export const registerCompany = async (req, res) => {
       company,
     });
   } catch (e) {
-    console.log("Something wrong on register company block  ", e);
+    console.error("Something wrong on register company block", e);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
   }
 };
 

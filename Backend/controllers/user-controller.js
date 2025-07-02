@@ -10,31 +10,34 @@ export const register = async (req, res) => {
     if (!fullname || !email || !phoneNumber || !password || !role) {
       return res.status(400).json({
         success: false,
-        message: "All the field must be filled",
+        message: "All the fields must be filled",
+      });
+    }
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists with this email",
       });
     }
 
     const file = req.file;
-    const fileUri = getDataUri(file);
-    const cloudeResponse = await cloudinary.uploader.upload(fileUri.content);
+    let profilePhotoUrl = "";
 
-    const user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exist with this email",
-      });
+    if (file) {
+      profilePhotoUrl = file.path; // local path of the uploaded file
     }
 
-    const hashpassword = await bcrypt.hash(password, 10);
+    const hashPassword = await bcrypt.hash(password, 10);
     await User.create({
       fullname,
       email,
       phoneNumber,
-      password: hashpassword,
+      password: hashPassword,
       role,
       profile: {
-        profilePhoto: cloudeResponse.secure_url,
+        profilePhoto: profilePhotoUrl,
       },
     });
 
@@ -43,7 +46,11 @@ export const register = async (req, res) => {
       success: true,
     });
   } catch (e) {
-    console.log("Some error occured in register block", e);
+    console.error("Some error occurred in register block", e);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
 };
 
@@ -136,18 +143,14 @@ export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, bio, skills } = req.body;
     const file = req.file;
-    //cloudinary
-    let cloudeResponse;
-    if (file) {
-      const fileUri = getDataUri(file);
-      cloudeResponse = await cloudinary.uploader.upload(fileUri.content);
-    }
 
+    // Prepare skills array
     let skillsArray;
     if (skills) {
-      skillsArray = skills.split(",");
+      skillsArray = skills.split(",").map((skill) => skill.trim());
     }
-    const userId = req.id; //yo chai middleware bata aauxa
+
+    const userId = req.id; // from middleware
 
     let user = await User.findById(userId);
 
@@ -157,41 +160,23 @@ export const updateProfile = async (req, res) => {
         success: false,
       });
     }
-    //updating the data
-    if (fullname) {
-      user.fullname = fullname;
-    }
 
-    if (email) {
-      user.email = email;
-    }
+    // Update basic info
+    if (fullname) user.fullname = fullname;
+    if (email) user.email = email;
+    if (phoneNumber) user.phoneNumber = phoneNumber;
+    if (bio) user.profile.bio = bio;
+    if (skills) user.profile.skills = skillsArray;
 
-    if (phoneNumber) {
-      user.phoneNumber = phoneNumber;
+    // Save local file path if file is uploaded
+    if (file) {
+      user.profile.resume = file.path; // Local path of file
+      user.profile.resumeOriginalName = file.originalname;
     }
-
-    if (bio) {
-      user.profile.bio = bio;
-    }
-
-    if (skills) {
-      user.profile.skills = skillsArray;
-    }
-
-    if (cloudeResponse) {
-      user.profile.resume = cloudeResponse.secure_url; //this saves the cloudinary uri
-      user.profile.resumeOriginalName = file.originalname; //save the original file name
-    }
-
-    // (user.fullname = fullname),
-    //   (user.email = email),
-    //   (user.phoneNumber = phoneNumber),
-    //   (user.profile.bio = bio),
-    //   (user.profile.skills = skillsArray);
 
     await user.save();
 
-    user = {
+    const filteredUser = {
       _id: user._id,
       fullname: user.fullname,
       email: user.email,
@@ -203,9 +188,13 @@ export const updateProfile = async (req, res) => {
     return res.status(200).json({
       message: "Profile updated successfully",
       success: true,
-      user,
+      user: filteredUser,
     });
   } catch (e) {
-    console.log("Some error occued in updateprifile block", e);
+    console.error("Error in updateProfile:", e);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
 };
