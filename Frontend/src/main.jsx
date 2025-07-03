@@ -22,6 +22,7 @@ import AdminJobs from "./components/Admin/AdminJobs.jsx";
 import PostJob from "./components/Admin/PostJob.jsx";
 import Applicants from "./components/Admin/Applicants.jsx";
 import RecommendJob from "./components/ui/RecommendJob.jsx";
+import ProtectedRoute from "./components/Admin/ProtectedRoute.jsx";
 
 const persister = persistStore(store);
 
@@ -65,12 +66,20 @@ const router = createBrowserRouter([
 
   {
     path: "/admin/companies",
-    element: <Companies />,
+    element: (
+      <ProtectedRoute>
+        <Companies />
+      </ProtectedRoute>
+    ),
   },
 
   {
     path: "/admin/companies/create",
-    element: <CompanyCreate />,
+    element: (
+      <ProtectedRoute>
+        <CompanyCreate />
+      </ProtectedRoute>
+    ),
   },
 
   {
@@ -79,11 +88,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin/jobs",
-    element: <AdminJobs />,
+    element: (
+      <ProtectedRoute>
+        <AdminJobs />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/admin/jobs/create",
-    element: <PostJob />,
+    element: (
+      <ProtectedRoute>
+        <PostJob />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "admin/jobs/:id/applicants",
