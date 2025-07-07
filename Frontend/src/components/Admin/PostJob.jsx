@@ -92,7 +92,7 @@ function PostJob() {
             <label className="mb-1 font-medium text-gray-700">
               Description
             </label>
-            <input
+            <textarea
               type="text"
               name="description"
               value={input.description}
@@ -105,7 +105,7 @@ function PostJob() {
             <label className="mb-1 font-medium text-gray-700">
               Requirement
             </label>
-            <input
+            <textarea
               type="text"
               name="requirements"
               value={input.requirements}

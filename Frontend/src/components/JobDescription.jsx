@@ -71,9 +71,13 @@ function JobDescription() {
           {singlejob?.title}
         </h1>
         <div className="flex flex-wrap gap-2">
-          <Badge variant="outline">{singlejob?.position}</Badge>
-          <Badge variant="outline">{singlejob?.jobType}</Badge>
-          <Badge variant="outline">{singlejob?.Salary}</Badge>
+          <Badge variant="outline" className="text-blue-500">
+            {singlejob?.position} Position
+          </Badge>
+          <Badge variant="outline" className="text-orange-500">
+            {singlejob?.jobType}
+          </Badge>
+          <Badge variant="outline">{singlejob?.Salary} LPA</Badge>
         </div>
       </div>
 
@@ -95,11 +99,15 @@ function JobDescription() {
             <strong>Description:</strong> <span>{singlejob?.description}</span>
           </p>
           <p>
+            <strong>Requirements:</strong>{" "}
+            <span>{singlejob?.requirements}</span>
+          </p>
+          <p>
             <strong>Experience:</strong>{" "}
             <span>{singlejob?.experienceLevel} Years</span>
           </p>
           <p>
-            <strong>Salary:</strong> <span>{singlejob?.Salary}</span>
+            <strong>Salary:</strong> <span>{singlejob?.Salary} LPA</span>
           </p>
           <p>
             <strong>Total Applicants:</strong>{" "}

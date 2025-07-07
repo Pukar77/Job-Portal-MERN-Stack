@@ -20,6 +20,7 @@ import useGetAllCompanies from "../../hooks/useGetAllCompanies";
 import { useNavigate } from "react-router-dom";
 
 function AdminJobsTable() {
+  const backendBaseUrl = "http://localhost:8000";
   const navigate = useNavigate();
   useGetAllCompanies();
   const { allAdminJobs, searchJobByText } = useSelector((store) => store.job);
@@ -46,6 +47,7 @@ function AdminJobsTable() {
         <TableCaption>A list of your recent posted jobs</TableCaption>
         <TableHeader>
           <TableRow>
+           
             <TableHead>Company Name</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Date</TableHead>
@@ -62,6 +64,7 @@ function AdminJobsTable() {
           ) : (
             filterJobs.map((job) => (
               <TableRow key={job._id}>
+                
                 <TableCell>{job?.company?.name || "Untitled Job"}</TableCell>
                 <TableCell>{job?.title || "Not specified"}</TableCell>
                 <TableCell>{job.createdAt?.split("T")[0]}</TableCell>
@@ -87,7 +90,7 @@ function AdminJobsTable() {
                         }}
                         className="flex items-center gap-3 text-gray-700 hover:text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-150"
                       >
-                        <ImUsers size={42} className="text-3xl"  />
+                        <ImUsers size={42} className="text-3xl" />
                         <span className="text-sm font-medium">Applicants</span>
                       </div>
                     </PopoverContent>
