@@ -21,7 +21,7 @@ import CompanySetup from "./components/Admin/CompanySetup.jsx";
 import AdminJobs from "./components/Admin/AdminJobs.jsx";
 import PostJob from "./components/Admin/PostJob.jsx";
 import Applicants from "./components/Admin/Applicants.jsx";
-import RecommendJob from "./components/ui/RecommendJob.jsx";
+import RecommendJob from "./components/RecommendJob.jsx";
 import ProtectedRoute from "./components/Admin/ProtectedRoute.jsx";
 
 const persister = persistStore(store);
