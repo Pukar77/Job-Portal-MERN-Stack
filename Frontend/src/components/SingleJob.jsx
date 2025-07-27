@@ -4,10 +4,14 @@ import { FaRegBookmark } from "react-icons/fa";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 function SingleJob({ job }) {
   const backendBaseUrl = "http://localhost:8000";
   const navigate = useNavigate();
+
+  const { user } = useSelector((store) => store.auth);
 
   const DaysAgoFunction = (mongodbtime) => {
     const createdAt = new Date(mongodbtime);
@@ -63,9 +67,13 @@ function SingleJob({ job }) {
       <div className="flex gap-3 pt-2">
         <Button
           onClick={() => {
+            if (user == null) {
+              toast.error("You must login first to view detail of the job");
+              return;
+            }
             navigate(`/description/${job?._id}`);
           }}
-          className=" cursor-pointer"
+          className="cursor-pointer"
           variant="outline"
         >
           View Details

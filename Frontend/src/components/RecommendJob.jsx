@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/shared-component/Navbar";
 
 function JobRecommendationCard({ job, rank, navigate }) {
   const DaysAgoFunction = (mongodbtime) => {
@@ -284,193 +285,196 @@ function RecommendJob() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            AI Job Recommender
-          </h1>
-          <p className="text-lg text-gray-600">
-            Upload your resume and get personalized job recommendations
-          </p>
-        </div>
-
-        {/* Main Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-          {/* File Upload Area */}
-          <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-700 mb-4">
-              Upload Your Resume (PDF)
-            </label>
-
-            <div
-              className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
-                dragActive
-                  ? "border-blue-500 bg-blue-50"
-                  : file
-                  ? "border-green-500 bg-green-50"
-                  : "border-gray-300 hover:border-gray-400"
-              }`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-            >
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-
-              {file ? (
-                <div className="space-y-3">
-                  <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-8 h-8 text-green-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                  <button
-                    onClick={removeFile}
-                    className="text-sm text-red-600 hover:text-red-800 font-medium"
-                  >
-                    Remove file
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-8 h-8 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-lg font-medium text-gray-900">
-                      Drop your PDF here, or click to browse
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Maximum file size: 10MB
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+    <div>
+      <Navbar />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              AI Job Recommender
+            </h1>
+            <p className="text-lg text-gray-600">
+              Upload your resume and get personalized job recommendations
+            </p>
           </div>
 
-          {/* Submit Button */}
-          <button
-            onClick={handleSubmit}
-            disabled={loading || !file}
-            className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 ${
-              loading || !file
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
-            }`}
-          >
-            {loading ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Processing Resume...</span>
-              </div>
-            ) : (
-              "Get Job Recommendations"
-            )}
-          </button>
+          {/* Main Card */}
+          <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+            {/* File Upload Area */}
+            <div className="mb-8">
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                Upload Your Resume (PDF)
+              </label>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-              <div className="flex items-center space-x-2">
-                <svg
-                  className="w-5 h-5 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              <div
+                className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
+                  dragActive
+                    ? "border-blue-500 bg-blue-50"
+                    : file
+                    ? "border-green-500 bg-green-50"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+              >
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+
+                {file ? (
+                  <div className="space-y-3">
+                    <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-8 h-8 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {file.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {(file.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                    <button
+                      onClick={removeFile}
+                      className="text-sm text-red-600 hover:text-red-800 font-medium"
+                    >
+                      Remove file
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-8 h-8 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-lg font-medium text-gray-900">
+                        Drop your PDF here, or click to browse
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Maximum file size: 10MB
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              onClick={handleSubmit}
+              disabled={loading || !file}
+              className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                loading || !file
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+              }`}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Processing Resume...</span>
+                </div>
+              ) : (
+                "Get Job Recommendations"
+              )}
+            </button>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                <div className="flex items-center space-x-2">
+                  <svg
+                    className="w-5 h-5 text-red-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p className="text-red-800 font-medium">{error}</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Recommendations */}
+          {recommendations.length > 0 && (
+            <div>
+              <div className="flex items-center space-x-2 mb-6">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Top Job Recommendations ({recommendations.length})
+                </h3>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+                {recommendations.map((job, i) => (
+                  <JobRecommendationCard
+                    key={job._id}
+                    job={job}
+                    rank={i + 1}
+                    navigate={navigate}
                   />
-                </svg>
-                <p className="text-red-800 font-medium">{error}</p>
+                ))}
               </div>
             </div>
           )}
-        </div>
 
-        {/* Recommendations */}
-        {recommendations.length > 0 && (
-          <div>
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900">
-                Top Job Recommendations ({recommendations.length})
-              </h3>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-              {recommendations.map((job, i) => (
-                <JobRecommendationCard
-                  key={job._id}
-                  job={job}
-                  rank={i + 1}
-                  navigate={navigate}
-                />
-              ))}
-            </div>
+          {/* Footer */}
+          <div className="text-center mt-8">
+            <p className="text-sm text-gray-500">
+              Powered by AI • Secure & Private • No data stored
+            </p>
           </div>
-        )}
-
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-sm text-gray-500">
-            Powered by AI • Secure & Private • No data stored
-          </p>
         </div>
       </div>
     </div>

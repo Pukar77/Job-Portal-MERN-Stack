@@ -1,13 +1,20 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 function JobCards({ job }) {
   const navigate = useNavigate();
+  const { user } = useSelector((store) => store.auth);
   return (
     <div
       onClick={() => {
-        navigate(`/description/${job._id}`);
+        if (user == null) {
+          toast.error("Login to view details");
+        } else {
+          navigate(`/description/${job._id}`);
+        }
       }}
       className="p-6 rounded-2xl shadow-md bg-white border border-gray-200 hover:shadow-xl transition duration-300 cursor-pointer space-y-4"
     >
