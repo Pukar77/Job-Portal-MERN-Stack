@@ -98,17 +98,6 @@ function AdminJobsTable() {
                       ...
                     </PopoverTrigger>
                     <PopoverContent className="bg-white rounded-xl shadow-lg p-4 w-36 border border-gray-200">
-                      {/* Edit */}
-                      <div
-                        onClick={() => {
-                          navigate(`/admin/companies/${job._id}`);
-                        }}
-                        className="flex items-center gap-3 text-gray-700 hover:text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-150"
-                      >
-                        <FaEdit className="text-md" />
-                        <span className="text-sm font-medium">Edit</span>
-                      </div>
-
                       {/* Applicants */}
                       <div
                         onClick={() => {
