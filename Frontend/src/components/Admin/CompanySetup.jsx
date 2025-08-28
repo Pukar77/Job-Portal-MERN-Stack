@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../shared-component/Navbar";
 import { Button } from "../ui/button";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -21,6 +21,25 @@ function CompanySetup() {
   });
   const [loading, setLoading] = useState(false);
 
+  // Fetch existing company data
+  useEffect(() => {
+    const fetchCompany = async () => {
+      try {
+        const res = await axios.get(`${COMPANY_API}/get/${id}`, {
+          withCredentials: true,
+        });
+        if (res.data.success) {
+          const { name, description, website, location } = res.data.company;
+          setInput({ name, description, website, location, file: null });
+        }
+      } catch (err) {
+        console.log("Error fetching company data", err);
+        toast.error("Failed to load company data");
+      }
+    };
+    fetchCompany();
+  }, [id]);
+
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -32,31 +51,28 @@ function CompanySetup() {
 
   const submitHandeler = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append("name", input.name);
     formData.append("description", input.description);
     formData.append("website", input.website);
     formData.append("location", input.location);
-    if (input.file) {
-      formData.append("file", input.file);
-    }
+    if (input.file) formData.append("file", input.file);
 
     try {
       setLoading(true);
-
       const res = await axios.put(`${COMPANY_API}/update/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
+
       if (res.data.success) {
         toast.success(res.data.message);
         navigate("/admin/companies");
       }
     } catch (e) {
-      console.log("Some error occured in companySetup page ", e);
-      toast.error(e?.response?.data?.message);
+      console.log("Some error occurred in companySetup page", e?.response?.data);
+      toast.error(e?.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -68,9 +84,7 @@ function CompanySetup() {
       <div className="max-w-xl mx-auto bg-white shadow-md rounded-2xl p-8 mt-10">
         <form onSubmit={submitHandeler} className="space-y-6">
           <Button
-            onClick={() => {
-              navigate("/admin/companies");
-            }}
+            onClick={() => navigate("/admin/companies")}
             variant="outline"
             className="flex items-center gap-2 mb-4"
           >
@@ -83,9 +97,7 @@ function CompanySetup() {
           </h1>
 
           <div className="space-y-1">
-            <label className="block font-medium text-gray-600">
-              Company Name
-            </label>
+            <label className="block font-medium text-gray-600">Company Name</label>
             <input
               type="text"
               name="name"
@@ -93,13 +105,12 @@ function CompanySetup() {
               onChange={changeEventHandler}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter company name"
+              required
             />
           </div>
 
           <div className="space-y-1">
-            <label className="block font-medium text-gray-600">
-              Description
-            </label>
+            <label className="block font-medium text-gray-600">Description</label>
             <input
               type="text"
               name="description"
@@ -141,8 +152,8 @@ function CompanySetup() {
               accept="image/*"
               onChange={changeFileHandler}
               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0 file:text-sm file:font-semibold
-              file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                file:rounded-md file:border-0 file:text-sm file:font-semibold
+                file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             />
           </div>
 

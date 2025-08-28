@@ -134,3 +134,40 @@ export const getAdminJob = async (req, res) => {
     console.log("Some error occured in getAdminJob block  ", e);
   }
 };
+
+export const deleteJob = async (req, res) => {
+  try {
+    const jobId = req.params.id; // jobId will come from URL (e.g., /api/job/:id)
+    const userId = req.id; // recruiter who is logged in
+
+    // check if job exists
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(404).json({
+        message: "Job not found",
+        success: false,
+      });
+    }
+
+    // only the creator can delete the job
+    if (job.created_by.toString() !== userId) {
+      return res.status(403).json({
+        message: "Unauthorized to delete this job",
+        success: false,
+      });
+    }
+
+    await Job.findByIdAndDelete(jobId);
+
+    return res.status(200).json({
+      message: "Job deleted successfully",
+      success: true,
+    });
+  } catch (e) {
+    console.log("Some error occurred in deleteJob block", e);
+    return res.status(500).json({
+      message: "Server error",
+      success: false,
+    });
+  }
+};

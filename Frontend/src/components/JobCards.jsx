@@ -7,6 +7,8 @@ import { toast } from "sonner";
 function JobCards({ job }) {
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
+  const backendBaseUrl = "http://localhost:8000";
+
   return (
     <div
       onClick={() => {
@@ -27,7 +29,7 @@ function JobCards({ job }) {
           <p className="text-sm text-gray-500">{job?.location}</p>
         </div>
         <img
-          src="https://99designs-blog.imgix.net/blog/wp-content/uploads/2022/06/Starbucks_Corporation_Logo_2011.svg-e1657703028844.png?auto=format&q=60&fit=max&w=930"
+          src={`${backendBaseUrl}${job?.company?.logo}`}
           alt="Company Logo"
           className="w-10 h-10 rounded-full object-cover"
         />

@@ -72,6 +72,10 @@ function Navbar() {
               <li className="hover:text-blue-600 cursor-pointer transition-colors">
                 <Link to="/recommend">Recommend job</Link>
               </li>
+
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">
+                <Link to="/chatbot">Chat with AI</Link>
+              </li>
             </ul>
           )}
 
@@ -121,13 +125,6 @@ function Navbar() {
                       </Button>
                     )}
 
-                    <Button
-                      className="hover:text-blue-600 cursor-pointer"
-                      variant="link"
-                    >
-                      <IoSettings />
-                      <span className="ml-2">Setting</span>
-                    </Button>
                     <Button
                       onClick={handleLogOut}
                       className="hover:text-blue-600 cursor-pointer"

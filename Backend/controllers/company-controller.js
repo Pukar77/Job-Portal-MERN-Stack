@@ -1,7 +1,7 @@
 import { Company } from "../models/company-model.js";
 import cloudinary from "../utils/cloudinary.js";
 import getDataUri from "../utils/datauri.js";
-
+import path from "path";
 export const registerCompany = async (req, res) => {
   try {
     const { companyName, description, website, location } = req.body;
@@ -95,29 +95,32 @@ export const getCompanyById = async (req, res) => {
 export const updateCompany = async (req, res) => {
   try {
     const { name, description, website, location } = req.body;
-    const file = req.file;
-    //clodinary
-    const fileUri = getDataUri(file);
-    const cloudeResponse = await cloudinary.uploader.upload(fileUri.content);
-    const logo = cloudeResponse.secure_url;
 
-    const updateData = { name, description, website, location, logo };
+    const updateData = { name, description, website, location };
+
+    // Handle file upload locally
+    if (req.file) {
+      // Save the relative path to the uploaded file
+      updateData.logo = `/uploads/${req.file.filename}`;
+    }
 
     const company = await Company.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
     });
 
     if (!company) {
-      return res.status(404).json({
-        message: "Company not found",
-        success: false,
-      });
+      return res
+        .status(404)
+        .json({ message: "Company not found", success: false });
     }
-    return res.status(200).json({
-      message: "Company information updated",
+
+    res.status(200).json({
+      message: "Company updated successfully",
       success: true,
+      company,
     });
   } catch (e) {
-    console.log("Some error occured in updatecompany block  ", e);
+    console.error("Error in updateCompany:", e);
+    res.status(500).json({ message: "Internal server error", success: false });
   }
 };

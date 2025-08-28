@@ -23,6 +23,7 @@ import PostJob from "./components/Admin/PostJob.jsx";
 import Applicants from "./components/Admin/Applicants.jsx";
 import RecommendJob from "./components/RecommendJob.jsx";
 import ProtectedRoute from "./components/Admin/ProtectedRoute.jsx";
+import Chatbot from "./Chatbot.jsx";
 
 const persister = persistStore(store);
 
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
   {
     path: "/recommend",
     element: <RecommendJob />,
+  },
+  {
+    path: "/chatbot",
+    element: <Chatbot />,
   },
 
   //for admin

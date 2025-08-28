@@ -1,5 +1,6 @@
 import { Application } from "../models/application-model.js";
 import { Job } from "../models/job-model.js";
+import nodemailer from "nodemailer";
 
 export const applyjob = async (req, res) => {
   try {
@@ -117,14 +118,16 @@ export const updateStatus = async (req, res) => {
     const applicationId = req.params.id;
 
     if (!status) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "Status must be entered",
         success: false,
       });
     }
 
-    //applicantId lai herera application find garne
-    const application = await Application.findOne({ _id: applicationId });
+    // Find application and populate applicant info
+    const application = await Application.findById(applicationId).populate(
+      "applicant"
+    );
     if (!application) {
       return res.status(404).json({
         message: "No application found",
@@ -132,15 +135,45 @@ export const updateStatus = async (req, res) => {
       });
     }
 
-    //update status
+    // Update status
     application.status = status.toLowerCase();
     await application.save();
 
+    // === SEND EMAIL ===
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: false, // true for 465, false for 587
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Your Company" <${process.env.SMTP_USER}>`,
+      to: application.applicant.email,
+      subject: `Application ${status}`,
+      text: `Hi ${
+        application.applicant.fullname
+      },\n\nYour application has been ${status.toLowerCase()}.\n\nBest regards,\nCompany Team`,
+      // optional HTML template
+      html: `<p>Hi ${application.applicant.fullname},</p>
+             <p>Your application has been <b>${status}</b>.</p>
+             <p>Best regards,<br/>Company Team</p>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
     return res.status(200).json({
-      message: "Succesfully updated status",
+      message: `Successfully updated status and email sent (${status})`,
       success: true,
     });
   } catch (e) {
-    console.log("Some error occured in updateStatus block ", e);
+    console.log("Some error occurred in updateStatus block ", e);
+    return res.status(500).json({
+      message: "Something went wrong",
+      success: false,
+    });
   }
 };
