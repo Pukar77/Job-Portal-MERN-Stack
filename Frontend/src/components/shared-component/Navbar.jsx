@@ -69,9 +69,19 @@ function Navbar() {
                 <Link to="/browse">Browse</Link>
               </li>
 
-              <li className="hover:text-blue-600 cursor-pointer transition-colors">
-                <Link to="/recommend">Recommend job</Link>
-              </li>
+              {user ? (
+                <li className="hover:text-blue-600 cursor-pointer transition-colors">
+                  <Link to="/recommend">Recommend job</Link>
+                </li>
+              ) : (
+                <span className="cursor-pointer"
+                  onClick={() => {
+                    toast.error("You must login to use this feature");
+                  }}
+                >
+                  Recommend job
+                </span>
+              )}
 
               <li className="hover:text-blue-600 cursor-pointer transition-colors">
                 <Link to="/chatbot">Chat with AI</Link>

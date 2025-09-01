@@ -11,10 +11,12 @@ import { toast } from "sonner";
 function JobDescription() {
   const { singlejob } = useSelector((store) => store.job);
   const { user } = useSelector((store) => store.auth);
+
   const isInitiallyApplied =
     singlejob?.applications?.some(
       (application) => application.applicant === user?._id
     ) || false;
+
   const [isApplied, setIsApplied] = useState(isInitiallyApplied);
   const params = useParams();
   const jobId = params.id;
@@ -26,14 +28,13 @@ function JobDescription() {
       const res = await axios.get(`${APPLICATION_API}/apply/${jobId}`, {
         withCredentials: true,
       });
-      console.log(res);
       if (res.data.success) {
-        setIsApplied(true); //to udate the local state
+        setIsApplied(true);
         const updateSingleJob = {
           ...singlejob,
           applications: [...singlejob.applications, { applicant: user?._id }],
         };
-        dispatch(setSingleJob(updateSingleJob)); //helps us to update real time UI.
+        dispatch(setSingleJob(updateSingleJob));
         toast.success(res.data.message);
       }
     } catch (e) {
@@ -47,21 +48,30 @@ function JobDescription() {
         const res = await axios.get(`${JOB_API}/getjob/${jobId}`, {
           withCredentials: true,
         });
-        console.log(res);
         if (res.data.success) {
           dispatch(setSingleJob(res.data.job));
           setIsApplied(
             res.data.job.applications.some(
               (application) => application.applicant === user?._id
             )
-          ); //ensure the state is in sync with fetched data
+          );
         }
       } catch (e) {
-        console.log("Some error occured in job description block ", e);
+        console.log("Some error occurred in job description block ", e);
       }
     };
     fetchSingleJOb();
   }, [jobId, dispatch, user?._id]);
+
+  if (!singlejob) return null;
+
+  // ✅ Check if job expired (older than 14 days)
+  const daysSincePosting = singlejob?.createdAt
+    ? Math.floor(
+        (new Date() - new Date(singlejob.createdAt)) / (1000 * 60 * 60 * 24)
+      )
+    : 0;
+  const isExpired = daysSincePosting > 14;
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md max-w-3xl mx-auto mt-10 space-y-6 border border-gray-200">
@@ -119,19 +129,25 @@ function JobDescription() {
           </p>
         </div>
 
-        {/* Apply Button */}
+        {/* ✅ Apply Button / Expired Message */}
         <div>
-          <Button
-            disabled={isApplied}
-            onClick={isApplied ? null : applyJobHandler}
-            className={`w-full text-white py-2 mt-2 font-semibold transition-colors cursor-pointer ${
-              isApplied
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
-          >
-            {isApplied ? "Already Applied" : "Apply Now"}
-          </Button>
+          {isExpired ? (
+            <p className="text-red-500 font-semibold text-center mt-3">
+              No longer accepting applications
+            </p>
+          ) : (
+            <Button
+              disabled={isApplied}
+              onClick={isApplied ? null : applyJobHandler}
+              className={`w-full text-white py-2 mt-2 font-semibold transition-colors cursor-pointer ${
+                isApplied
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
+            >
+              {isApplied ? "Already Applied" : "Apply Now"}
+            </Button>
+          )}
         </div>
       </div>
     </div>

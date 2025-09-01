@@ -10,13 +10,12 @@ from bson import ObjectId
 app = Flask(__name__)
 CORS(app)
 
-# MongoDB setup
 client = MongoClient("mongodb://localhost:27017/")
 db = client["job-portal"]
 jobs_collection = db["jobs"]
 companies_collection = db["companies"]
 
-# ------------------------- Utility Functions ------------------------- #
+
 
 def clean_text(text):
     text = text.lower()
@@ -49,16 +48,19 @@ def compute_idf(doc_tokens_list):
     return {word: math.log(N / (df[word])) for word in df}
 
 def compute_tfidf(tf, idf):
-    return {word: tf[word] * idf[word] for word in tf if word in idf}
+    # Compute TF-IDF vector
+    vec = {word: tf[word] * idf[word] for word in tf if word in idf}
+    # Normalize vector
+    mag = math.sqrt(sum(val ** 2 for val in vec.values()))
+    if mag == 0:
+        return vec
+    return {word: val / mag for word, val in vec.items()}
 
 def cosine_similarity_manual(vec1, vec2):
     common_words = set(vec1.keys()) & set(vec2.keys())
     dot_product = sum(vec1[word] * vec2[word] for word in common_words)
-    mag1 = math.sqrt(sum(val ** 2 for val in vec1.values()))
-    mag2 = math.sqrt(sum(val ** 2 for val in vec2.values()))
-    if mag1 == 0 or mag2 == 0:
-        return 0.0
-    return dot_product / (mag1 * mag2)
+    # Since vectors are normalized, magnitude is 1, so cosine = dot_product
+    return max(0.0, min(dot_product, 1.0))
 
 def convert_objectids(obj):
     if isinstance(obj, ObjectId):
@@ -91,36 +93,33 @@ def recommend():
     if len(user_text) < 10:
         return jsonify({"error": "Extracted text from PDF is too short or empty"}), 400
 
-    # Get all jobs
     jobs = list(jobs_collection.find({}))
     if not jobs:
         return jsonify({"error": "No jobs found in database"}), 404
 
-    # Tokenize resume and job descriptions
     user_tokens = tokenize(user_text)
     job_tokens_list = [tokenize(job.get("description", "")) for job in jobs]
 
-    # TF and IDF
     all_docs_tokens = [user_tokens] + job_tokens_list
     idf = compute_idf(all_docs_tokens)
 
     user_tf = compute_tf(user_tokens)
-    user_tfidf = compute_tfidf(user_tf, idf)
+    user_tfidf = compute_tfidf(user_tf, idf)  # Normalized
 
     results = []
     for i, tokens in enumerate(job_tokens_list):
         job_tf = compute_tf(tokens)
-        job_tfidf = compute_tfidf(job_tf, idf)
+        job_tfidf = compute_tfidf(job_tf, idf)  # Normalized
         sim = cosine_similarity_manual(user_tfidf, job_tfidf)
+        sim_percentage = round(sim * 100, 2)
 
         job = convert_objectids(jobs[i])
 
-        # ---------------- Add company NAME instead of ID ---------------- #
         company_id = jobs[i].get("company")
         if company_id:
             company = companies_collection.find_one({"_id": ObjectId(company_id)})
             if company:
-                job["company"] = company.get("name", "Unknown Company")  # replace ID with Name
+                job["company"] = company.get("name", "Unknown Company")
                 job["companyLogo"] = company.get("logo", "")
             else:
                 job["company"] = "Unknown Company"
@@ -129,11 +128,9 @@ def recommend():
             job["company"] = "Unknown Company"
             job["companyLogo"] = ""
 
-        # Similarity score
-        job["similarity_score"] = round(sim, 4)
+        job["similarity_score"] = sim_percentage
         results.append(job)
 
-    # Sort results by similarity
     results.sort(key=lambda x: x["similarity_score"], reverse=True)
 
     return jsonify(results)

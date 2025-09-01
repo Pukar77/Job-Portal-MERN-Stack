@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import useGetAllCompanies from "../../hooks/useGetAllCompanies";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "sonner";
 
 function AdminJobsTable() {
   const backendBaseUrl = "http://localhost:8000/api/v1/job";
@@ -55,15 +56,15 @@ function AdminJobsTable() {
       console.log(response.body);
 
       if (response.status === 200) {
-        alert("Job deleted successfully!");
+        toast.success("Job deleted successfully!");
         // remove from UI
         setFilterJobs((prev) => prev.filter((job) => job._id !== jobId));
       } else {
-        alert("Failed to delete job.");
+        toast.error("Failed to delete job.");
       }
     } catch (error) {
       console.error("Error deleting job:", error);
-      alert("Something went wrong!");
+      toast.error("Something went wrong!");
     }
   };
 

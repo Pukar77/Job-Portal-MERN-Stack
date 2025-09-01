@@ -17,11 +17,17 @@ import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import axios from "axios";
 import { APPLICATION_API } from "../../../utils/api";
+const backendBaseUrl = "http://localhost:8000";
 
 const shortListingStatus = ["Accepted", "Rejected"];
 
 function ApplicantTable() {
+  const { user } = useSelector((store) => store.auth);
+
   const { applicants } = useSelector((store) => store.application);
+  const { applications } = useSelector((store) => store.application);
+  console.log(applications);
+  console.log(applicants);
   const statusHandler = async (status, id) => {
     try {
       const res = await axios.post(
@@ -29,9 +35,10 @@ function ApplicantTable() {
         { status },
         { withCredentials: true }
       );
+      console.log(res.data);
       if (res.data.success) {
         toast.success(res.data.message);
-      } 
+      }
     } catch (e) {
       console.log("Some error occured in applicantTable page ", e);
       toast.error(error.response.data.message);
@@ -62,10 +69,22 @@ function ApplicantTable() {
                   <TableCell>{item?.applicant?.phoneNumber}</TableCell>
                   <TableCell>
                     {item?.applicant?.profile?.resume ? (
-                      <a href={item?.applicant?.profile.resume} target="_blank">
-                        {item?.applicant?.profile?.resumeOriginalName}
+                      <a
+                        href={`${backendBaseUrl}/${item?.applicant?.profile?.resume}`}
+                        target="_blank"
+                      >
+                        {item?.applicant?.fullname} CV
                       </a>
                     ) : (
+                      // <a
+                      //   href={`${backendBaseUrl}/${user.profile.resume}`}
+                      //   target="_blank"
+                      //   rel="noopener noreferrer"
+                      //   className="text-blue-600 hover:underline font-semibold"
+                      // >
+                      //   📄 {user.profile.resumeOriginalName}
+                      // </a>
+                      // http://localhost:8000/uploads/536fdcbe-c8ff-4940-8cd7-71e9134719ff.pdf
                       <span>Resume not posted yet</span>
                     )}
                   </TableCell>

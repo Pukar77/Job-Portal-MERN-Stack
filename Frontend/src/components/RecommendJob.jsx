@@ -23,7 +23,7 @@ function JobRecommendationCard({ job, rank, navigate }) {
     return levels[level] || `${level} Years`;
   };
 
-  const matchScore = (job.similarity_score * 100).toFixed(1);
+  const matchScore = Number(job.similarity_score * 10).toFixed(1);
 
   return (
     <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300 space-y-4 border border-gray-200 relative overflow-hidden">
@@ -31,9 +31,9 @@ function JobRecommendationCard({ job, rank, navigate }) {
       <div className="absolute top-4 right-4">
         <div
           className={`text-white px-3 py-1 rounded-full text-sm font-semibold ${
-            job.similarity_score >= 0.03
+            job.similarity_score >= 4.0
               ? "bg-gradient-to-r from-green-500 to-emerald-500"
-              : job.similarity_score >= 0.02
+              : job.similarity_score >= 3.5
               ? "bg-gradient-to-r from-yellow-500 to-orange-500"
               : "bg-gradient-to-r from-red-500 to-pink-500"
           }`}
@@ -49,7 +49,7 @@ function JobRecommendationCard({ job, rank, navigate }) {
         </div>
       </div>
 
-      {/* Header: Date and Bookmark */}
+      {/* Header */}
       <div className="flex items-center justify-between text-sm text-gray-500 pt-8">
         <p>
           {DaysAgoFunction(job.createdAt) === 0
@@ -119,7 +119,7 @@ function JobRecommendationCard({ job, rank, navigate }) {
         </p>
       </div>
 
-      {/* Job Details Badges */}
+      {/* Job Details */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
           {job.position} Position{job.position > 1 ? "s" : ""}
@@ -135,7 +135,7 @@ function JobRecommendationCard({ job, rank, navigate }) {
         </span>
       </div>
 
-      {/* Requirements Preview */}
+      {/* Requirements */}
       {job.requirements && job.requirements.length > 0 && (
         <div className="bg-gray-50 rounded-lg p-3">
           <h4 className="text-sm font-semibold text-gray-700 mb-2">
@@ -158,31 +158,12 @@ function JobRecommendationCard({ job, rank, navigate }) {
       )}
 
       {/* Match Score Progress Bar */}
-      <div className="space-y-2">
-        <div className="flex justify-between text-xs text-gray-500">
-          <span>Compatibility Score</span>
-          <span>{matchScore}%</span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className={`h-2 rounded-full transition-all duration-500 ${
-              job.similarity_score >= 0.03
-                ? "bg-gradient-to-r from-green-500 to-emerald-500"
-                : job.similarity_score >= 0.02
-                ? "bg-gradient-to-r from-yellow-500 to-orange-500"
-                : "bg-gradient-to-r from-red-500 to-pink-500"
-            }`}
-            style={{ width: `${job.similarity_score * 100}%` }}
-          ></div>
-        </div>
-      </div>
+      
 
       {/* Action Buttons */}
       <div className="flex gap-3 pt-2">
         <button
-          onClick={() => {
-            navigate(`/description/${job._id}`);
-          }}
+          onClick={() => navigate(`/description/${job._id}`)}
           className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
         >
           View Details
@@ -192,7 +173,7 @@ function JobRecommendationCard({ job, rank, navigate }) {
         </button>
       </div>
 
-      {/* Job ID for reference */}
+      {/* Job ID */}
       <div className="text-xs text-gray-400 text-center pt-2 border-t border-gray-100">
         Job ID: {job._id}
       </div>
@@ -268,7 +249,18 @@ function RecommendJob() {
       if (!response.ok) {
         setError(data.error || "Error fetching recommendations");
       } else {
-        setRecommendations(data.slice(0, 5)); // show top 5
+        // Filter jobs with similarity_score > 3.5
+        const filteredJobs = data.filter((job) => job.similarity_score > 3.5);
+
+        if (filteredJobs.length === 0) {
+          setError(
+            "Oops! Currently, your CV does not match any available jobs. Try updating your resume or check back later."
+          );
+          setRecommendations([]);
+        } else {
+          setError("");
+          setRecommendations(filteredJobs);
+        }
       }
     } catch (err) {
       setError("Something went wrong while processing your resume.");
@@ -301,7 +293,7 @@ function RecommendJob() {
 
           {/* Main Card */}
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-            {/* File Upload Area */}
+            {/* File Upload */}
             <div className="mb-8">
               <label className="block text-sm font-medium text-gray-700 mb-4">
                 Upload Your Resume (PDF)
@@ -405,11 +397,11 @@ function RecommendJob() {
                   <span>Processing Resume...</span>
                 </div>
               ) : (
-                "Get Job Recommendations"
+                <button className="cursor-pointer">Get Job Recommendations</button>
               )}
             </button>
 
-            {/* Error Message */}
+            {/* Error / No Match Message */}
             {error && (
               <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl">
                 <div className="flex items-center space-x-2">
@@ -472,7 +464,7 @@ function RecommendJob() {
           {/* Footer */}
           <div className="text-center mt-8">
             <p className="text-sm text-gray-500">
-              Powered by AI • Secure & Private • No data stored
+              Powered by ApplyRush • No data stored
             </p>
           </div>
         </div>
