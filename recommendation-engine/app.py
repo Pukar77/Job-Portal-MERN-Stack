@@ -14,6 +14,7 @@ CORS(app)
 client = MongoClient("mongodb://localhost:27017/")
 db = client["job-portal"]
 jobs_collection = db["jobs"]
+companies_collection = db["companies"]
 
 # ------------------------- Utility Functions ------------------------- #
 
@@ -111,7 +112,24 @@ def recommend():
         job_tf = compute_tf(tokens)
         job_tfidf = compute_tfidf(job_tf, idf)
         sim = cosine_similarity_manual(user_tfidf, job_tfidf)
+
         job = convert_objectids(jobs[i])
+
+        # ---------------- Add company NAME instead of ID ---------------- #
+        company_id = jobs[i].get("company")
+        if company_id:
+            company = companies_collection.find_one({"_id": ObjectId(company_id)})
+            if company:
+                job["company"] = company.get("name", "Unknown Company")  # replace ID with Name
+                job["companyLogo"] = company.get("logo", "")
+            else:
+                job["company"] = "Unknown Company"
+                job["companyLogo"] = ""
+        else:
+            job["company"] = "Unknown Company"
+            job["companyLogo"] = ""
+
+        # Similarity score
         job["similarity_score"] = round(sim, 4)
         results.append(job)
 

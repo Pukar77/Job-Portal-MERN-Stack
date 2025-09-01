@@ -82,7 +82,7 @@ function JobRecommendationCard({ job, rank, navigate }) {
         </div>
         <div>
           <h2 className="text-md font-semibold text-gray-900">
-            Company ID: {job.company}
+            Company name: {job.company}
           </h2>
           <p className="text-sm text-gray-500 flex items-center">
             <svg
