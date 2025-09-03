@@ -12,6 +12,7 @@ function Signup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((store) => store.auth);
+
   const [input, setInput] = useState({
     fullname: "",
     email: "",
@@ -21,6 +22,8 @@ function Signup() {
     file: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleinput = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -29,8 +32,45 @@ function Signup() {
     setInput({ ...input, file: e.target.files?.[0] });
   };
 
+  // Validation logic
+  const validate = () => {
+    let newErrors = {};
+
+    if (!input.fullname || input.fullname.trim().length < 3) {
+      newErrors.fullname = "Full name must be at least 3 characters";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!input.email || !emailRegex.test(input.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+
+    const phoneRegex = /^98\d{8}$/; // Nepali format 98XXXXXXXX
+    if (!input.phoneNumber || !phoneRegex.test(input.phoneNumber)) {
+      newErrors.phoneNumber =
+        "Enter a valid 10-digit phone number starting with 98";
+    }
+
+    // Password: at least 6 chars and 1 special character
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    if (!input.password || input.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    } else if (!specialCharRegex.test(input.password)) {
+      newErrors.password = "Password must contain at least one special character";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validate()) {
+      toast.error("Please fix the errors in the form");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("fullname", input.fullname);
     formData.append("email", input.email);
@@ -40,6 +80,7 @@ function Signup() {
     if (input.file) {
       formData.append("file", input.file);
     }
+
     try {
       dispatch(setLoading(true));
       const res = await axios.post(`${USER_API}/register`, formData, {
@@ -54,7 +95,7 @@ function Signup() {
       }
     } catch (e) {
       console.log("Some error occured in handlesubmit in signup ", e);
-      toast.error(e.response.data.message);
+      toast.error(e.response?.data?.message || "Something went wrong");
     } finally {
       dispatch(setLoading(false));
     }
@@ -64,7 +105,6 @@ function Signup() {
     <>
       <Navbar />
       <div className="min-h-screen flex items-center justify-center px-2 pt-10">
-        {/* Added pt-24 to push below navbar (adjust if your navbar is taller) */}
         <div className="bg-white rounded-xl p-6 w-full max-w-lg border-2">
           <h2 className="text-2xl font-bold text-center text-blue-600 mb-2">
             Create an Account
@@ -81,13 +121,20 @@ function Signup() {
               </label>
               <input
                 type="text"
-                placeholder="John Doe"
+                placeholder="Your_Name"
                 value={input.fullname}
                 name="fullname"
                 onChange={handleinput}
-                className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className={`w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 ${
+                  errors.fullname
+                    ? "border-red-500 focus:ring-red-400"
+                    : "border-gray-300 focus:ring-blue-400"
+                }`}
                 required
               />
+              {errors.fullname && (
+                <p className="text-red-500 text-sm mt-1">{errors.fullname}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -101,9 +148,16 @@ function Signup() {
                 value={input.email}
                 name="email"
                 onChange={handleinput}
-                className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className={`w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 ${
+                  errors.email
+                    ? "border-red-500 focus:ring-red-400"
+                    : "border-gray-300 focus:ring-blue-400"
+                }`}
                 required
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
 
             {/* Phone Number */}
@@ -117,9 +171,18 @@ function Signup() {
                 value={input.phoneNumber}
                 name="phoneNumber"
                 onChange={handleinput}
-                className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className={`w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 ${
+                  errors.phoneNumber
+                    ? "border-red-500 focus:ring-red-400"
+                    : "border-gray-300 focus:ring-blue-400"
+                }`}
                 required
               />
+              {errors.phoneNumber && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.phoneNumber}
+                </p>
+              )}
             </div>
 
             {/* Password */}
@@ -133,12 +196,19 @@ function Signup() {
                 value={input.password}
                 name="password"
                 onChange={handleinput}
-                className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className={`w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 ${
+                  errors.password
+                    ? "border-red-500 focus:ring-red-400"
+                    : "border-gray-300 focus:ring-blue-400"
+                }`}
                 required
               />
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
 
-            {/* Role Selection */}
+            {/* Role (no validation) */}
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">
                 I am a:
@@ -153,7 +223,7 @@ function Signup() {
                     onChange={handleinput}
                     className="accent-blue-600"
                   />
-                  Student
+                  Job Seeker
                 </label>
                 <label className="flex items-center gap-2 text-gray-700">
                   <input
@@ -167,8 +237,9 @@ function Signup() {
                   Recruiter
                 </label>
               </div>
-              <div className="mb-4">
-                <label className=" text-gray-700 text-sm font-medium mb-1">
+
+              <div className="mt-4">
+                <label className="text-gray-700 text-sm font-medium mb-1">
                   Profile Image
                 </label>
                 <input
@@ -195,7 +266,7 @@ function Signup() {
                 type="submit"
                 className="w-full bg-blue-600 text-white font-medium py-2 rounded-md hover:bg-blue-700 transition duration-200 cursor-pointer"
               >
-                Login
+                Sign Up
               </button>
             )}
           </form>

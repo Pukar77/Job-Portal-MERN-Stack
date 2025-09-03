@@ -31,9 +31,9 @@ function JobRecommendationCard({ job, rank, navigate }) {
       <div className="absolute top-4 right-4">
         <div
           className={`text-white px-3 py-1 rounded-full text-sm font-semibold ${
-            job.similarity_score >= 4.0
+            job.similarity_score >= 5.5
               ? "bg-gradient-to-r from-green-500 to-emerald-500"
-              : job.similarity_score >= 3.5
+              : job.similarity_score >= 4.5
               ? "bg-gradient-to-r from-yellow-500 to-orange-500"
               : "bg-gradient-to-r from-red-500 to-pink-500"
           }`}
@@ -158,18 +158,14 @@ function JobRecommendationCard({ job, rank, navigate }) {
       )}
 
       {/* Match Score Progress Bar */}
-      
 
       {/* Action Buttons */}
       <div className="flex gap-3 pt-2">
         <button
           onClick={() => navigate(`/description/${job._id}`)}
-          className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+          className="flex-1 px-4 py-2 border border-gray-300 text-white  bg-blue-600 rounded-lg hover:bg-black transition-colors font-medium cursor-pointer"
         >
           View Details
-        </button>
-        <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-          Save for Later
         </button>
       </div>
 
@@ -249,8 +245,8 @@ function RecommendJob() {
       if (!response.ok) {
         setError(data.error || "Error fetching recommendations");
       } else {
-        // Filter jobs with similarity_score > 3.5
-        const filteredJobs = data.filter((job) => job.similarity_score > 3.5);
+        // Filter jobs with similarity_score > 4.0
+        const filteredJobs = data.filter((job) => job.similarity_score > 4.0);
 
         if (filteredJobs.length === 0) {
           setError(
@@ -397,7 +393,9 @@ function RecommendJob() {
                   <span>Processing Resume...</span>
                 </div>
               ) : (
-                <button className="cursor-pointer">Get Job Recommendations</button>
+                <button className="cursor-pointer">
+                  Get Job Recommendations
+                </button>
               )}
             </button>
 

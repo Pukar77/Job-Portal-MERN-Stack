@@ -51,7 +51,7 @@ function Chatbot() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg text-lg font-semibold text-white disabled:opacity-50"
+            className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg text-lg font-semibold text-white disabled:opacity-50 cursor-pointer"
           >
             {loading ? "Generating..." : "Generate"}
           </button>

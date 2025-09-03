@@ -109,7 +109,7 @@ function Login() {
                     onChange={handleinput}
                     className="accent-blue-600"
                   />
-                  Student
+                  Job Seeker
                 </label>
                 <label className="flex items-center gap-2 text-gray-700">
                   <input

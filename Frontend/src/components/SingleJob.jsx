@@ -1,6 +1,5 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { FaRegBookmark } from "react-icons/fa";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
@@ -17,25 +16,22 @@ function SingleJob({ job }) {
     const createdAt = new Date(mongodbtime);
     const currentTime = new Date();
     const timeDifference = currentTime - createdAt;
-    return Math.floor(timeDifference / (1000 * 24 * 60 * 60));
+    return Math.floor(timeDifference / (1000 * 60 * 60 * 24));
   };
+
+  const daysAgo = DaysAgoFunction(job?.createdAt);
+
   return (
     <div className="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition-shadow duration-300 space-y-4 border border-gray-200">
-      {/* Header: Date and Bookmark */}
+      {/* Header: Date */}
       <div className="flex items-center justify-between text-sm text-gray-500">
         <p>
-          {" "}
-          {DaysAgoFunction(job?.createdAt) === 0
+          {daysAgo === 0
             ? "Today"
-            : `${DaysAgoFunction(job?.createdAt)}`}{" "}
-          days ago{" "}
+            : daysAgo === 1
+            ? "1 day ago"
+            : `${daysAgo} days ago`}
         </p>
-        <Button
-          variant="outline"
-          className="rounded-full size-8 flex items-center justify-center p-1"
-        >
-          <FaRegBookmark className="text-gray-600" />
-        </Button>
       </div>
 
       {/* Company Info */}
@@ -73,12 +69,10 @@ function SingleJob({ job }) {
             }
             navigate(`/description/${job?._id}`);
           }}
-          className="cursor-pointer"
-          variant="outline"
+          className="cursor-pointer bg-blue-600 text-white w-full"
         >
           View Details
         </Button>
-        <Button className=" cursor-pointer bg-blue-600">Save for Later</Button>
       </div>
     </div>
   );

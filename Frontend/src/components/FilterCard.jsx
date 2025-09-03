@@ -17,10 +17,6 @@ const filterData = [
       "Data Science",
     ],
   },
-  {
-    filterType: "Salary",
-    array: ["0-50k", "50k-1 Lakh", "Above 1 Lakh"],
-  },
 ];
 
 function FilterCard() {
