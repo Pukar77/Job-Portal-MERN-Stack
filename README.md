@@ -1,6 +1,6 @@
 ApplyRush is a MERN stack job portal that simplifies the job-seeking process by providing personalized job recommendations, career guidance, and easy online applications. With smart recommendations through CV analysis using TF-IDF and cosine similarity algorithm. ApplyRush helps users land their dream job faster.
 
-Features
+**Features**
 
 Job Recommendations – Smart matching of jobs based on TF-IDF and cosine similarity.
 
@@ -12,7 +12,7 @@ Applicant Status Tracking – Get notified about your application status via Nod
 
 User Authentication – Secure login & signup with JWT-based authentication.
 
-🛠️ Tech Stack
+**Tech Stack**
 
 Frontend: React.js, Tailwind CSS
 Backend: Node.js, Express.js
@@ -20,7 +20,7 @@ Database: MongoDB
 Algorithms: TF-IDF, Cosine Similarity
 AI Integration: Gemini API (Career Advice)
 
-⚙️ Installation & Setup (For installation of this project in your devices)
+**Installation & Setup (For installation of this project in your devices)**
 
 Clone the Repository
 
@@ -28,7 +28,7 @@ git clone https://github.com/yourusername/applyrush.git
 cd applyrush
 
 
-Install Dependencies  (see dependencies from package.json)
+**Install Dependencies  (see dependencies from package.json)**
 
 For Backend
 
@@ -42,7 +42,7 @@ cd client
 npm install
 
 
-Environment Variables
+**Environment Variables**
 Create a .env file in the server folder with:
 
 MONGO_URI = your_mongodb_connection_url
@@ -67,26 +67,31 @@ SMTP_USER=emailid_from_where_mail_is_sent
 
 SMTP_PASS=app_password_from_google
 
-Run the Project
+**Run the Project**
 
 Backend:
 
-cd server
-npm run dev
+cd backend
+npm start
 
 
 Frontend:
 
-cd client
-npm start
+cd frontend
+npm run dev
+
+Python:
+
+cd recommendation-engine
+python app.py
 
 
-📊 Algorithms Used
+**Algorithms Used**
 
 TF-IDF + Cosine Similarity → Finds the best job matches based on text similarity between CV skills and job descriptions.
 
 
-🔮 Future Enhancements
+**Future Enhancements**
 
 AI-powered interview preparation module
 
@@ -94,7 +99,7 @@ Resume auto-improvement suggestions
 
 Multi-language support for wider accessibility
 
-🤝 Contributing
+**Contributing**
 
 Contributions are welcome!
 
@@ -108,12 +113,13 @@ Open a pull request
 
 
 
-👨‍💻 Author
+👨‍💻 **Author**
 
 Pukar Rimal
 
 [pukarrimal11@gmail.com]
 
 [https://www.linkedin.com/in/pukar-rimal/]
+
 
 
