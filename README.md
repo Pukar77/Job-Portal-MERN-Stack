@@ -15,9 +15,13 @@ User Authentication – Secure login & signup with JWT-based authentication.
 **Tech Stack**
 
 Frontend: React.js, Tailwind CSS
+
 Backend: Node.js, Express.js
+
 Database: MongoDB
+
 Algorithms: TF-IDF, Cosine Similarity
+
 AI Integration: Gemini API (Career Advice)
 
 **Installation & Setup (For installation of this project in your devices)**
@@ -120,6 +124,7 @@ Pukar Rimal
 [pukarrimal11@gmail.com]
 
 [https://www.linkedin.com/in/pukar-rimal/]
+
 
 
 
