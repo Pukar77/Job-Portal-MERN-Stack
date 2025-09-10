@@ -46,15 +46,25 @@ Environment Variables
 Create a .env file in the server folder with:
 
 MONGO_URI = your_mongodb_connection_url
+
 PORT = port_number
+
 SECRET_KEY = your_secrete_key
+
 CLOUD_NAME = your_cloude_name
+
 API_KEY = your_api_key
+
 API_SECRET = your_api_secrete_key
+
 API_KEY1 = your_api_keys
+
 SMTP_HOST=smtp_host
+
 SMTP_PORT=587
+
 SMTP_USER=emailid_from_where_mail_is_sent
+
 SMTP_PASS=app_password_from_google
 
 Run the Project
@@ -105,4 +115,5 @@ Pukar Rimal
 [pukarrimal11@gmail.com]
 
 [https://www.linkedin.com/in/pukar-rimal/]
+
 
