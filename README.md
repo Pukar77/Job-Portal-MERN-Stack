@@ -1,130 +1,174 @@
-ApplyRush is a MERN stack job portal that simplifies the job-seeking process by providing personalized job recommendations, career guidance, and easy online applications. With smart recommendations through CV analysis using TF-IDF and cosine similarity algorithm. ApplyRush helps users land their dream job faster.
+# ApplyRush
 
-**Features**
+ApplyRush is a smart job portal built with a MERN-style stack plus a Python recommendation service. It supports job browsing, applications, employer management, CV-based recommendations, and a Gemini-powered career chatbot.
 
-Job Recommendations – Smart matching of jobs based on TF-IDF and cosine similarity.
+## Features
 
-CV Analysis – Upload CVs to get skill-based job suggestions.
+- User authentication with JWT-based login and signup
+- Job browsing, search, filtering, and job details
+- Job application flow with applicant tracking and email notifications
+- Employer tools for company setup, posting jobs, and reviewing applicants
+- CV-based job recommendations using TF-IDF and cosine similarity
+- Career advice chatbot powered by Google Gemini
 
-Career Advice Chatbot – Get instant career guidance using Gemini API.
+## Project Structure
 
-Applicant Status Tracking – Get notified about your application status via Nodemailer.
+```text
+ApplyRush_A_Smart_job_Portal/
+├── Backend/
+│   ├── index.js
+│   ├── controllers/
+│   ├── dbconnection/
+│   ├── middlewares/
+│   ├── models/
+│   ├── routes/
+│   ├── uploads/
+│   └── utils/
+├── Frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── redux/
+│   │   ├── utils/
+│   │   └── App.jsx
+│   ├── public/
+│   └── vite.config.js
+├── recommendation-engine/
+│   ├── app.py
+│   └── requirement.txt
+├── package.json
+└── README.md
+```
 
-User Authentication – Secure login & signup with JWT-based authentication.
+- `Backend/` contains the Express API, authentication, database connection, upload handling, Cloudinary integration, and email/chatbot routes.
+- `Frontend/` contains the React application, reusable UI components, Redux store, hooks, and client-side routing.
+- `recommendation-engine/` contains the Flask service that analyzes uploaded CVs and returns ranked job recommendations.
 
-**Tech Stack**
+## Tech Stack
 
-Frontend: React.js, Tailwind CSS
+- Frontend: React, Vite, Redux Toolkit, Tailwind CSS, Radix UI
+- Backend: Node.js, Express, MongoDB, Mongoose
+- Recommendation service: Python, Flask, PyMuPDF, MongoDB
+- Integrations: Cloudinary, Nodemailer, Google Gemini
 
-Backend: Node.js, Express.js
+## Prerequisites
 
-Database: MongoDB
+- Node.js 18+ and npm
+- Python 3.10+ for the recommendation engine
+- MongoDB connection string
+- Cloudinary account credentials
+- Gmail SMTP credentials or another SMTP provider
+- Google Gemini API key
 
-Algorithms: TF-IDF, Cosine Similarity
+## Setup
 
-AI Integration: Gemini API (Career Advice)
+### 1. Clone the repository
 
-**Installation & Setup (For installation of this project in your devices)**
+```bash
+git clone https://github.com/Pukar77/ApplyRush_A_Smart_job_Portal.git
+cd ApplyRush_A_Smart_job_Portal
+```
 
-Clone the Repository
+### 2. Configure the backend
 
-git clone https://github.com/yourusername/applyrush.git
-cd applyrush
+Install backend dependencies:
 
-
-**Install Dependencies  (see dependencies from package.json)**
-
-For Backend
-
-cd server
+```bash
+cd Backend
 npm install
+```
 
+Create a Backend/.env file with the required variables:
 
-For Frontend
-
-cd client
-npm install
-
-
-**Environment Variables**
-Create a .env file in the server folder with:
-
-MONGO_URI = your_mongodb_connection_url
-
-PORT = port_number
-
-SECRET_KEY = your_secrete_key
-
-CLOUD_NAME = your_cloude_name
-
-API_KEY = your_api_key
-
-API_SECRET = your_api_secrete_key
-
-API_KEY1 = your_api_keys
-
-SMTP_HOST=smtp_host
-
+```env
+MONGO_URI=your_mongodb_connection_string
+PORT=8000
+SECRET_KEY=your_jwt_secret
+CLOUD_NAME=your_cloudinary_cloud_name
+API_KEY=your_cloudinary_api_key
+API_SECRET=your_cloudinary_api_secret
+API_KEY1=your_gemini_api_key
+SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
+SMTP_USER=your_email_address
+SMTP_PASS=your_app_password
+```
 
-SMTP_USER=emailid_from_where_mail_is_sent
+### 3. Configure the frontend
 
-SMTP_PASS=app_password_from_google
+Install frontend dependencies:
 
-**Run the Project**
+```bash
+cd ../Frontend
+npm install
+```
 
-Backend:
+The frontend is configured to call the backend at http://localhost:8000 through the constants in Frontend/utils/api.js.
 
-cd backend
+### 4. Configure the recommendation engine
+
+Install Python dependencies:
+
+```bash
+cd ../recommendation-engine
+pip install -r requirement.txt
+```
+
+The recommendation service reads from the MongoDB database job-portal on mongodb://localhost:27017/ and runs on port 5000.
+
+## Running the project
+
+Run each service in a separate terminal:
+
+```bash
+# Backend
+cd Backend
 npm start
+```
 
-
-Frontend:
-
-cd frontend
+```bash
+# Frontend
+cd Frontend
 npm run dev
+```
 
-Python:
-
+```bash
+# Recommendation engine
 cd recommendation-engine
 python app.py
+```
 
+## Default Local Ports
 
-**Algorithms Used**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:8000
+- Recommendation engine: http://localhost:5000
 
-TF-IDF + Cosine Similarity → Finds the best job matches based on text similarity between CV skills and job descriptions.
+## API Overview
 
+- /api/v1/user
+- /api/v1/company
+- /api/v1/job
+- /api/v1/application
+- /api/genai
+- /recommend for the Python recommendation service
 
-**Future Enhancements**
+## Notes
 
-AI-powered interview preparation module
+- The backend serves uploaded files from /uploads.
+- The frontend uses Redux Persist for session state.
+- The recommendation engine expects PDF CV uploads.
 
-Resume auto-improvement suggestions
+## Contributing
 
-Multi-language support for wider accessibility
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Open a pull request
 
-**Contributing**
-
-Contributions are welcome!
-
-Fork the repo
-
-Create a new branch
-
-Commit changes
-
-Open a pull request
-
-
-
-👨‍💻 **Author**
+## Author
 
 Pukar Rimal
 
-[pukarrimal11@gmail.com]
-
-[https://www.linkedin.com/in/pukar-rimal/]
-
-
-
-
+- Email: pukarrimal11@gmail.com
+- LinkedIn: https://www.linkedin.com/in/pukar-rimal/
